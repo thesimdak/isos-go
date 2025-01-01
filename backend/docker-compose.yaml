@@ -1,0 +1,48 @@
+
+## We're using version 3.7X of the Docker Compose file format
+version: "3.7"
+
+# Define services/containers
+services:
+  mysql:
+    # Use mysql:8.0.19 image
+    image: mysql:8.0.19
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    # Pass a list of environment variables to the container
+    environment:
+      MYSQL_DATABASE: svetsplhu
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: palestra
+      MYSQL_ROOT_PASSWORD: palestra
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - my_network
+
+  # phpMyAdmin container
+  phpmyadmin:
+    # Use phpmyadmin/phpmyadmin:5.0.2 image
+    image: phpmyadmin/phpmyadmin:5.0.2
+    # Map port 8080 on the host to port 80 inside the container
+    # Syntax is: "HOST_PORT:CONTAINER_PORT"
+    ports:
+      - "8089:80"
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: svetsplhu
+    # Wait for "mysql" container to start first
+    depends_on:
+      - mysql
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - my_network
+
+volumes:
+  mysql-data:
+
+networks:
+  my_network:
