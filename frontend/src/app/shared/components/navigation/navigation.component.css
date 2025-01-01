@@ -1,0 +1,36 @@
+.fa-1x {
+    font-size: 1.5rem;
+    }
+    .navbar-toggler.toggler-example {
+    cursor: pointer;
+    }
+    .dark-blue-text {
+    color: #0A38F5;
+    }
+    .dark-pink-text {
+    color: #AC003A;
+    }
+    .dark-amber-text {
+    color: #ff6f00;
+    }
+    .dark-teal-text {
+    color: #004d40;
+    }
+a {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.navbar-brand {
+    font-family: 'Quicksand', sans-serif;
+}
+
+
+.logo {
+    width: 50px;
+    height: auto;
+}
+
+.navbar-light .navbar-toggler {
+    border:0;
+  }
+  

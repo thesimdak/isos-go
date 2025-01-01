@@ -1,0 +1,12 @@
+<div class="nomination-criteria-dialog">
+  <div>
+    Nominace pro rok:
+  </div>
+  <div class="season-selection-line">
+    <p-dropdown styleClass="nomination-criteria-season-dropdown" (onChange)="selectSeason($event)" [options]="criteriaSeasons"></p-dropdown>
+    <button type="button" class="create-nomination-criteria-btn" pButton (click)="createNominationCriteria()">
+      <div class="btn-label">Vytvořit</div>
+    </button>
+  </div>
+
+</div>

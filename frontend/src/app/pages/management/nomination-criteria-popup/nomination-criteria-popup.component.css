@@ -1,0 +1,26 @@
+.nomination-criteria-season-dropdown {
+    margin-bottom: 200px;
+}
+
+.nomination-criteria-dialog {
+    margin-bottom: 200px;
+    padding-bottom: 100px;
+}
+
+.create-nomination-criteria-btn {
+    margin-left: 10px;
+    height: 35px;
+}
+
+.season-selection-line {
+    display: flex;
+}
+
+.btn-label {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-top: .25em;
+}

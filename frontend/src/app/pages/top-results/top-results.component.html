@@ -1,0 +1,38 @@
+<div class="ml-2">
+    <h1>Historický žebříček</h1>
+</div>
+<div class="divider"></div>
+<div class="mt-2">
+<p-dropdown styleClass="h2-dropdown" (onChange)="selectCategory($event)" [options]="categories"></p-dropdown>
+
+<div *ngIf="!loading">
+    <p-table [value]="results" [autoLayout]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>#</th>
+                <th>Jméno</th>
+                <th>Ročník</th>
+                <th>Oddíl</th>
+                <th>Závod</th>
+                <th>Čas</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-result>
+            <tr>
+                <td>{{result.resultRank}}</td>
+                <td>{{result.lastName}}, {{result.firstName}}</td>
+                <td>{{result.yearOfBirth}}</td>
+                <td>{{result.organization}}</td>
+                <td>{{result.competitionName}}</td>
+                <td>{{getStringTime(result.topTime)}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    </div>
+</div>
+
+<div *ngIf="loading" class="spinner d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>

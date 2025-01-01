@@ -1,0 +1,10 @@
+.landing {
+    width: 100%;
+    height: auto;
+}
+
+.divider {
+    height: 1px;
+    box-shadow: 0 0.5px 0 grey;
+    border-bottom: 0.5px grey;
+  }
