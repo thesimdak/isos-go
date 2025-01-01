@@ -6,8 +6,8 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "program": "${workspaceFolder}/main.go",
-      "envFile": "${workspaceFolder}/.env",
+      "program": "${workspaceFolder}/backend/main.go",
+      "envFile": "${workspaceFolder}/backend/.env",
       "cwd": "${workspaceFolder}",
       "args": []
     }

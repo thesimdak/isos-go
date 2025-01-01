@@ -20,7 +20,7 @@ func NewCompetitionRepository(repo *repository.Repository) *CompetitionRepositor
 func (repo *CompetitionRepository) SaveCompetition(competition *models.Competition) *models.Competition {
 	query := `
 		INSERT INTO competition (
-			competition_name, name, date, place, judge, sensor_installation, starter, type
+			competition_name, name, date, place, jugde, sensor_installation, starter, type
 		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 
 	result, err := repo.DB.Exec(
@@ -44,7 +44,7 @@ func (repo *CompetitionRepository) SaveCompetition(competition *models.Competiti
 
 func (repo *CompetitionRepository) FindCompetition(name string, date time.Time) *models.Competition {
 	query := `
-        SELECT id, competition_name, name, date, place, judge, sensor_installation, starter, type
+        SELECT id, competition_name, name, date, place, jugde, sensor_installation, starter, type
         FROM competition
         WHERE name = ? AND date = ?`
 

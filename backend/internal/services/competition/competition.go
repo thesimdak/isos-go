@@ -40,9 +40,9 @@ func (s *CompetitionService) CreateCompetition(c *models.Competition) *models.Co
 	if c.CompetitionName == "" || c.Name == "" {
 		panic("competition name and name are required")
 	}
-	c = s.CompetitionRepo.FindCompetition(c.Name, c.Date)
-	if c != nil {
-		return c
+	storedCompatition := s.CompetitionRepo.FindCompetition(c.Name, c.Date)
+	if storedCompatition != nil {
+		return storedCompatition
 	}
 	return s.CompetitionRepo.SaveCompetition(c)
 }
