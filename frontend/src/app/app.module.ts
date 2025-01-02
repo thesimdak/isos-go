@@ -19,6 +19,9 @@ import { CompetitionManagementModule } from './pages/management/competition-mana
 import { AllCategoriesResolver } from './resolvers/all-categories.resolver';
 import { NominationCriteriaModule } from './pages/nomination-criteria/nomination-criteria.module';
 import { HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +42,14 @@ import { HttpClientModule, provideHttpClient } from '@angular/common/http';
   providers: [
     { provide: "BASE_API_URL", useValue: environment.apiUrl },
     provideHttpClient(),
+    providePrimeNG({
+      theme: {
+        preset: Aura, // Configure your theme preset
+        options: {
+          darkModeSelector: false || 'none'
+      }
+      },
+    }),
     SeasonResolver,
     CompetitionResolver,
     CategoriesResolver,
