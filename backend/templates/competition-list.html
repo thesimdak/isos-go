@@ -1,0 +1,16 @@
+{{ define "competition-list.html" }}
+<h2>VYSLEDKY</h2>
+
+<select id="competition-type" name="competition-type"
+          hx-get="/competitions" 
+          hx-trigger="load, change" 
+          hx-target="#competition-list">
+    <option value="all" selected>All</option>
+    <option value="national">National</option>
+    <option value="international">International</option>
+  </select>
+
+  <div id="competition-list">
+    <!-- Competition list will be dynamically loaded here -->
+  </div>
+{{ end }}
