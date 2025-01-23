@@ -36,6 +36,11 @@ func NewCompetitionService(competitionRepository *competition.CompetitionReposit
 		ParticipationRepo: participationRepository}
 }
 
+func (svc *CompetitionService) GetSeasons() []int16 {
+	seasons, _ := svc.CompetitionRepo.GetSeasons()
+	return seasons
+}
+
 func (s *CompetitionService) CreateCompetition(c *models.Competition) *models.Competition {
 	if c.CompetitionName == "" || c.Name == "" {
 		panic("competition name and name are required")

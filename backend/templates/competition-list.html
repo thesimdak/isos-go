@@ -5,9 +5,10 @@
           hx-get="/competitions" 
           hx-trigger="load, change" 
           hx-target="#competition-list">
-    <option value="all" selected>All</option>
-    <option value="national">National</option>
-    <option value="international">International</option>
+          {{ range $index, $season := .Seasons }}
+          <option value="{{ $season }}" {{ if eq $index 0 }}selected{{ end }}>Sezona {{ $season }}</option>
+          {{ end }}
+  
   </select>
 
   <div id="competition-list">

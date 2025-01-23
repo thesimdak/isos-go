@@ -32,31 +32,35 @@ func Initialize(db *sql.DB) {
 
 	// Step 4: Initialize the handler
 	uploadHandler := upload.NewUploadHandler(competitionService)
+	router.Static("/static", "./static")
 
 	router.POST("/upload", uploadHandler.Upload)
 	// pages
 	router.GET("/", func(c *gin.Context) {
-		renderPage(c, "competition-list.html")
+		seasons := competitionService.GetSeasons()
+		renderPartial(c, "competition-list.html", gin.H{
+			"Seasons": seasons,
+		})
 	})
 	router.GET("/competition-list", func(c *gin.Context) {
-		renderPartial(c, "competition-list.html")
+		seasons := competitionService.GetSeasons()
+		renderPartial(c, "competition-list.html", gin.H{
+			"Seasons": seasons,
+		})
 	})
 	router.GET("/top-results", func(c *gin.Context) {
-		renderPartial(c, "top-results.html")
+		renderPartial(c, "top-results.html", nil)
 	})
 	router.GET("/management", func(c *gin.Context) {
-		renderPartial(c, "management.html")
+		renderPartial(c, "management.html", nil)
 	})
 
 	// partials
 	// season dropdown
 	router.GET("/seasons", func(c *gin.Context) {
-		renderPartial(c, "seasons.html")
+		renderPartial(c, "seasons.html", nil)
 	})
 
-	router.GET("/season-list", func(c *gin.Context) {
-		renderPage(c, "seasons.html")
-	})
 	// Load templates
 	router.SetHTMLTemplate(parseTemplates())
 
@@ -65,33 +69,25 @@ func Initialize(db *sql.DB) {
 		var competitions []string
 		competitions = append(competitions, "Memorial Bedricha Supcika")
 		competitions = append(competitions, "Mistrovstvi Ceske Republiky")
-
 		c.HTML(http.StatusOK, "competitions.html", gin.H{
 			"Competitions": competitions,
 		})
 	})
+
 	router.Run(":8080")
 }
 
-func renderPage(c *gin.Context, templateName string) {
-	c.HTML(http.StatusOK, "layout.html", gin.H{
-		"contentTemplate": templateName,
-	})
+func renderPage(c *gin.Context, templateName string, h gin.H) {
+	h["contentTemplate"] = templateName
+	c.HTML(http.StatusOK, "layout.html", h)
 }
 
-func renderPartial(c *gin.Context, templateName string) {
+func renderPartial(c *gin.Context, templateName string, h gin.H) {
 	if c.GetHeader("HX-Request") == "true" {
-		c.HTML(http.StatusOK, templateName, nil)
+		c.HTML(http.StatusOK, templateName, h)
 		return
 	}
-	renderPage(c, templateName)
-}
-
-func renderComponent(c *gin.Context, templateName string) {
-	if c.GetHeader("HX-Request") == "true" {
-		c.HTML(http.StatusOK, templateName, nil)
-		return
-	}
+	renderPage(c, templateName, h)
 }
 
 // Parse templates from the main directory and components subdirectory

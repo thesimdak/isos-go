@@ -17,6 +17,36 @@ func NewCompetitionRepository(repo *repository.Repository) *CompetitionRepositor
 	return &CompetitionRepository{Repository: repo}
 }
 
+func (repo *CompetitionRepository) GetSeasons() ([]int16, error) {
+	query := `SELECT DISTINCT YEAR(date) FROM competition ORDER BY YEAR(date) DESC`
+
+	// Execute the query
+	rows, err := repo.DB.Query(query)
+	if err != nil {
+		return nil, err // Handle query execution error
+	}
+	defer rows.Close()
+
+	// Slice to store the seasons (years)
+	var seasons []int16
+
+	// Iterate through the rows and scan the years
+	for rows.Next() {
+		var year int16
+		if err := rows.Scan(&year); err != nil {
+			return nil, err // Handle scanning error
+		}
+		seasons = append(seasons, year)
+	}
+
+	// Check for errors during row iteration
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return seasons, nil
+}
+
 func (repo *CompetitionRepository) SaveCompetition(competition *models.Competition) *models.Competition {
 	query := `
 		INSERT INTO competition (
