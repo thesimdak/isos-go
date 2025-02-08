@@ -16,7 +16,7 @@ import (
 )
 
 type CompetitionService struct {
-	CompetitionRepo   *competition.CompetitionRepository
+	competitionRepo   *competition.CompetitionRepository
 	CategoryRepo      *category.CategoryRepository
 	RopeClimberRepo   *ropeclimber.RopeClimberRepository
 	ParticipationRepo *participation.ParticipationRepository
@@ -29,7 +29,7 @@ func NewCompetitionService(competitionRepository *competition.CompetitionReposit
 	timeRepository *time.TimeRepository,
 	participationRepository *participation.ParticipationRepository,
 ) *CompetitionService {
-	return &CompetitionService{CompetitionRepo: competitionRepository,
+	return &CompetitionService{competitionRepo: competitionRepository,
 		CategoryRepo:      categoryRepository,
 		RopeClimberRepo:   ropeClimberRepository,
 		TimeRepo:          timeRepository,
@@ -37,7 +37,7 @@ func NewCompetitionService(competitionRepository *competition.CompetitionReposit
 }
 
 func (svc *CompetitionService) GetSeasons() []int16 {
-	seasons, _ := svc.CompetitionRepo.GetSeasons()
+	seasons, _ := svc.competitionRepo.GetSeasons()
 	return seasons
 }
 
@@ -45,11 +45,11 @@ func (s *CompetitionService) CreateCompetition(c *models.Competition) *models.Co
 	if c.CompetitionName == "" || c.Name == "" {
 		panic("competition name and name are required")
 	}
-	storedCompatition := s.CompetitionRepo.FindCompetition(c.Name, c.Date)
+	storedCompatition := s.competitionRepo.FindCompetition(c.Name, c.Date)
 	if storedCompatition != nil {
 		return storedCompatition
 	}
-	return s.CompetitionRepo.SaveCompetition(c)
+	return s.competitionRepo.SaveCompetition(c)
 }
 
 func (svc *CompetitionService) UploadResults(file multipart.File) {

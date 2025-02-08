@@ -1,0 +1,30 @@
+<nav class="bg-gray-800 text-white px-4 py-3" x-data="{ open: false }" @click.outside="open = false">
+    <div class="container mx-auto flex justify-between items-center">
+      <!-- Logo -->
+      <div class="text-lg font-bold">Logo</div>
+
+      <!-- Desktop Menu -->
+      <ul class="hidden md:flex space-x-6">
+        <li><a href="#" class="hover:text-gray-300">Option 1</a></li>
+        <li><a href="#" class="hover:text-gray-300">Option 2</a></li>
+        <li><a href="#" class="hover:text-gray-300">Option 3</a></li>
+      </ul>
+
+      <!-- Hamburger Menu -->
+      <button class="md:hidden text-xl focus:outline-none" @click="open = !open">
+        ☰
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <ul
+      class="md:hidden bg-gray-700 text-white flex flex-col space-y-3 p-4 rounded-md shadow-md mt-2"
+      x-show="open"
+      x-transition
+      @click="open = false"
+    >
+      <li><a href="#" class="hover:text-gray-300">Option 1</a></li>
+      <li><a href="#" class="hover:text-gray-300">Option 2</a></li>
+      <li><a href="#" class="hover:text-gray-300">Option 3</a></li>
+    </ul>
+  </nav>
