@@ -9,13 +9,29 @@
       </div>
 
       <!-- Desktop Menu -->
-      <ul class="hidden lg:flex space-x-6">
-        <li><a href="/competition-list" hx-get="/competition-list" hx-target="#main-content" hx-swap="innerHTML"
-            hx-push-url="true">VÝSLEDKY</a></li>
-        <li><a href="/top-results" hx-get="/top-results" hx-target="#main-content" hx-swap="innerHTML"
-            hx-push-url="true">HISTORICKÝ ŽEBŘÍČEK</a></li>
-        <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML"
-            hx-push-url="true">ADMINISTRACE</a></li>
+      <ul class="hidden lg:flex space-x-6" x-data="{ currentPath: window.location.pathname }"
+        @htmx:pushed-into-history.window="currentPath = window.location.pathname">
+        <li><a href="/competition-list" 
+          hx-get="/competition-list" 
+          hx-target="#main-content" 
+          hx-swap="innerHTML"
+          hx-push-url="true"
+          class="hover:text-blue-600"
+          :class="{ 'font-bold': currentPath === '/competition-list' }">VÝSLEDKY</a></li>
+        <li><a href="/top-results" 
+          hx-get="/top-results" 
+          hx-target="#main-content" 
+          hx-swap="innerHTML"
+          hx-push-url="true"
+          class="hover:text-blue-600"
+          :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a></li>
+        <li><a href="/management"
+          hx-get="/management"
+          hx-target="#main-content"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+          class="hover:text-blue-600"
+          :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
       </ul>
 
       <!-- Hamburger Menu -->
@@ -29,13 +45,30 @@
     </div>
     <!-- Mobile Menu -->
     <ul class="lg:hidden bg-white flex flex-col space-y-3 pt-5 w-full" x-show="open" x-transition
-      @click="open = false">
-      <li><a href="/competition-list" hx-get="/competition-list" hx-target="#main-content" hx-swap="innerHTML"
-          hx-push-url="true">VÝSLEDKY</a></li>
-      <li><a href="/top-results" hx-get="/top-results" hx-target="#main-content" hx-swap="innerHTML"
-          hx-push-url="true">HISTORICKÝ ŽEBŘÍČEK</a></li>
-      <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML"
-          hx-push-url="true">ADMINISTRACE</a></li>
+      @click="open = false"
+      x-data="{ currentPath: window.location.pathname }"
+        @htmx:pushed-into-history.window="currentPath = window.location.pathname">
+      <li><a href="/competition-list" 
+        hx-get="/competition-list" 
+        hx-target="#main-content"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+        class="hover:text-blue-600"
+          :class="{ 'font-bold': currentPath === '/competition-list'}">VÝSLEDKY</a></li>
+      <li><a href="/top-results"
+         hx-get="/top-results" 
+         hx-target="#main-content" 
+         hx-swap="innerHTML"
+          hx-push-url="true"
+          class="hover:text-blue-600"
+          :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a></li>
+      <li><a href="/management"
+         hx-get="/management" 
+         hx-target="#main-content" 
+         hx-swap="innerHTML"
+          hx-push-url="true"
+          class="hover:text-blue-600"
+          :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
     </ul>
 
 
