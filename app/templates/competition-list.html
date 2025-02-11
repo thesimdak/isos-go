@@ -1,17 +1,37 @@
 {{ define "competition-list.html" }}
-<h2>VYSLEDKY</h2>
+<div class="border-b-1 border-gray-600">
+  <div x-data="{ open: false, selected: '{{ index .Seasons 0 }}' }"
+  @htmx:load.window.once="() => {
+    $refs.hiddenInput.value = selected;
+    $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+}"
+  class="relative w-64">
+    <!-- Selected Value (Trigger for Dropdown) -->
+    <button @click="open = !open"
+      class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none">
+      Sezóna <span x-text="selected"></span> ▼
+    </button>
 
-<select id="competition-type" name="competition-type"
-          hx-get="/competitions" 
-          hx-trigger="load, change" 
-          hx-target="#competition-list">
-          {{ range $index, $season := .Seasons }}
-          <option value="{{ $season }}" {{ if eq $index 0 }}selected{{ end }}>Sezona {{ $season }}</option>
-          {{ end }}
-  
-  </select>
+    <!-- Dropdown List -->
+    <div x-show="open" @click.away="open = false"
+      class="absolute w-full bg-white  shadow-md mt-1 max-h-40 overflow-y-auto z-10">
+      {{ range .Seasons }}
+      <div
+        @click="selected = '{{ . }}'; open = false; $refs.hiddenInput.value = '{{ . }}'; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: false }))"
+        class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
+        Sezóna {{ . }}
+      </div>
+      {{ end }}
+    </div>
 
-  <div id="competition-list">
-    <!-- Competition list will be dynamically loaded here -->
+    <!-- Hidden Input for HTMX -->
+    <input type="hidden" id="competition-type" name="competition-type" x-ref="hiddenInput" hx-get="/competitions"
+      hx-trigger="change" hx-target="#competition-list">
   </div>
+
+</div>
+
+<div id="competition-list">
+  <!-- Competition list will be dynamically loaded here -->
+</div>
 {{ end }}

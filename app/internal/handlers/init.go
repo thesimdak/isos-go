@@ -43,16 +43,17 @@ func Initialize(db *sql.DB) {
 		})
 	})
 	router.GET("/competition-list", func(c *gin.Context) {
-		seasons := competitionService.GetSeasons()
+		//seasons := competitionService.GetSeasons()
+		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025}
 		renderPartial(c, "competition-list.html", gin.H{
 			"Seasons": seasons,
 		})
 	})
 	router.GET("/top-results", func(c *gin.Context) {
-		renderPartial(c, "top-results.html", nil)
+		renderPartial(c, "top-results.html", gin.H{})
 	})
 	router.GET("/management", func(c *gin.Context) {
-		renderPartial(c, "management.html", nil)
+		renderPartial(c, "management.html", gin.H{})
 	})
 
 	// partials
