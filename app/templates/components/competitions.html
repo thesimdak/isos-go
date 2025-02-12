@@ -1,12 +1,19 @@
 {{ define "competitions.html" }}
 
 {{ range .Competitions }}
-<div class="competition-item">
-  <h3>{{ . }}</h3>
+<div class="bg-gray-100 p-4 rounded-lg shadow w-full flex justify-center items-center cursor-pointer"
+          hx-get="/results/{{.ID}}" 
+          hx-target="#main-content" 
+          hx-swap="innerHTML"
+          hx-push-url="true">
+  <div class="competition-item flex justify-between items-center w-[90%] py-5 text-gray-600">
+    <div class="text-lg">{{ .Name }}</div>
+    <div class="text-lg">{{ .FormattedDate }}</div>
+  </div>
 </div>
+
 {{ else }}
 <p>No competitions available for the selected type.</p>
 {{ end }}
 
 {{ end }}
-

@@ -29,6 +29,9 @@
             {{ if eq .contentTemplate "management.html" }}
             {{ template "management.html" . }}
             {{ end }}
+            {{ if eq .contentTemplate "results.html" }}
+            {{ template "results.html" . }}
+            {{ end }}
     </main>
 </body>
 

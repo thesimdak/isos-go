@@ -13,3 +13,7 @@ type Competition struct {
 	Starter            string    `json:"starter"`
 	Type               string    `json:"type"`
 }
+
+func (c Competition) FormattedDate() string {
+	return c.Date.Format("02.01.2006") // Format as DD.MM.YYYY
+}

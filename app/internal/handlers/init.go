@@ -4,15 +4,17 @@ import (
 	"database/sql"
 	"html/template"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thesimdak/goisos/internal/handlers/upload"
+	models "github.com/thesimdak/goisos/internal/models"
 	"github.com/thesimdak/goisos/internal/repository"
 	"github.com/thesimdak/goisos/internal/repository/category"
 	"github.com/thesimdak/goisos/internal/repository/competition"
 	"github.com/thesimdak/goisos/internal/repository/participation"
 	"github.com/thesimdak/goisos/internal/repository/ropeclimber"
-	"github.com/thesimdak/goisos/internal/repository/time"
+	timeRepo "github.com/thesimdak/goisos/internal/repository/time"
 	competitionService "github.com/thesimdak/goisos/internal/services/competition"
 )
 
@@ -24,7 +26,7 @@ func Initialize(db *sql.DB) {
 	competitionRepo := competition.NewCompetitionRepository(repo)
 	categoryRepo := category.NewCategoryRepository(repo)
 	ropeClimberRepo := ropeclimber.NewRopeClimberRepository(repo)
-	timeRepo := time.NewTimeRepository(repo)
+	timeRepo := timeRepo.NewTimeRepository(repo)
 	participationRepo := participation.NewParticipationRepository(repo)
 
 	// Step 3: Initialize the service
@@ -44,9 +46,19 @@ func Initialize(db *sql.DB) {
 	})
 	router.GET("/competition-list", func(c *gin.Context) {
 		//seasons := competitionService.GetSeasons()
-		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025}
+		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 20025}
 		renderPartial(c, "competition-list.html", gin.H{
 			"Seasons": seasons,
+		})
+	})
+	router.GET("/results/:id", func(c *gin.Context) {
+		//id := c.Param("id")
+		var categories []models.Category
+		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
+		categories = append(categories, models.Category{ID: 122, Label: "Zeny"})
+
+		renderPartial(c, "results.html", gin.H{
+			"Categories": categories,
 		})
 	})
 	router.GET("/top-results", func(c *gin.Context) {
@@ -67,9 +79,10 @@ func Initialize(db *sql.DB) {
 
 	// Dynamic competition list route
 	router.GET("/competitions", func(c *gin.Context) {
-		var competitions []string
-		competitions = append(competitions, "Memorial Bedricha Supcika")
-		competitions = append(competitions, "Mistrovstvi Ceske Republiky")
+		var competitions []models.Competition
+		competitions = append(competitions, models.Competition{ID: 122, Name: "Memorial Bedricha Supcika 2024", Date: time.Now()})
+		competitions = append(competitions, models.Competition{ID: 123, Name: "Modransky Tarzan", Date: time.Now()})
+
 		c.HTML(http.StatusOK, "competitions.html", gin.H{
 			"Competitions": competitions,
 		})
