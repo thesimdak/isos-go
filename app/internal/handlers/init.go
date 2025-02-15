@@ -51,16 +51,28 @@ func Initialize(db *sql.DB) {
 			"Seasons": seasons,
 		})
 	})
-	router.GET("/results/:id", func(c *gin.Context) {
+	router.GET("/results/:competitionId", func(c *gin.Context) {
 		//id := c.Param("id")
 		var categories []models.Category
 		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
 		categories = append(categories, models.Category{ID: 122, Label: "Zeny"})
+		categories = append(categories, models.Category{ID: 122, Label: "Dorostenci"})
 
 		renderPartial(c, "results.html", gin.H{
 			"Categories": categories,
 		})
 	})
+
+	router.GET("/results/:competitionId/category/:categoryId", func(c *gin.Context) {
+		//id := c.Param("id")
+		var participationResults []models.ParticipationResult
+		participationResults = append(participationResults, models.ParticipationResult{Rank: 1, Name: "Jiri Novak", YearOfBirth: "1992", Organization: "Sokol Liben", Time1: "9.56", Time2: "9.56", Time3: "-", Time4: "5.56", Top: "5.56"})
+		participationResults = append(participationResults, models.ParticipationResult{Rank: 2, Name: "Martin Simon", YearOfBirth: "1990", Organization: "Sokol Liben", Time1: "11.56", Time2: "9.56", Time3: "-", Time4: "5.56", Top: "11.56"})
+		renderPartial(c, "result-table.html", gin.H{
+			"ParticipationResults": participationResults,
+		})
+	})
+
 	router.GET("/top-results", func(c *gin.Context) {
 		renderPartial(c, "top-results.html", gin.H{})
 	})

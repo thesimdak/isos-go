@@ -1,23 +1,28 @@
 {{ define "results.html" }}
-<div class="border-b-1 border-gray-600">
-  <div x-data="{ open: false, selected: '{{ index .Categories.Label 0 }}' }"
+<div class="border-b-1 border-gray-300">
+  <div x-data="{ 
+    open: false, 
+    selectedLabel: '{{ (index .Categories 0).Label }}', 
+    selectedID: '{{ (index .Categories 0).ID }}' 
+  }"
   @htmx:load.window.once="() => {
-    $refs.hiddenInput.value = selected;
+    $refs.hiddenInput.value = selectedID;
     $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-}"
+  }"
   class="relative w-64">
+    
     <!-- Selected Value (Trigger for Dropdown) -->
     <button @click="open = !open"
       class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none cursor-pointer">
-      <span x-text="selected"></span> ▼
+      <span x-text="selectedLabel"></span> ▼
     </button>
 
     <!-- Dropdown List -->
     <div x-show="open" @click.away="open = false"
-      class="absolute w-full bg-white  shadow-md mt-1 max-h-40 overflow-y-auto z-10">
+      class="absolute w-full bg-white shadow-md mt-1 max-h-40 overflow-y-auto z-10">
       {{ range .Categories }}
       <div
-        @click="selected = '{{ .ID }}'; open = false; $refs.hiddenInput.value = '{{ .ID }}'; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: false }))"
+        @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; $refs.hiddenInput.value = selectedID; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: false }))"
         class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
         {{ .Label }}
       </div>
@@ -25,13 +30,13 @@
     </div>
 
     <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="category" name="category" x-ref="hiddenInput" hx-get="/competitions"
+    <input type="hidden" id="category" name="category" x-ref="hiddenInput" hx-get="/results/122/category/12"
       hx-trigger="change" hx-target="#competition-list">
   </div>
-
 </div>
 
 <div id="competition-list">
   <!-- Competition list will be dynamically loaded here -->
 </div>
+
 {{ end }}

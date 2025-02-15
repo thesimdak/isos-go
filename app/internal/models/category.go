@@ -1,8 +1,8 @@
 package models
 
 type Category struct {
-	ID          int64   `json:"id"`
-	CategoryKey string  `json:"categoryKey"`
-	Label       string  `json:"label"`
-	RopeLength  float32 `json:"ropeLength"`
+	ID          int64
+	CategoryKey string
+	Label       string
+	RopeLength  float32
 }

@@ -3,15 +3,15 @@ package models
 import "time"
 
 type Competition struct {
-	ID                 int64     `json:"id"`
-	CompetitionName    string    `json:"competitionname"`
-	Name               string    `json:"name"`
-	Date               time.Time `json:"date"`
-	Place              string    `json:"place"`
-	Judge              string    `json:"judge"`
-	SensorInstallation string    `json:"sensorinstallation"`
-	Starter            string    `json:"starter"`
-	Type               string    `json:"type"`
+	ID                 int64
+	CompetitionName    string
+	Name               string
+	Date               time.Time
+	Place              string
+	Judge              string
+	SensorInstallation string
+	Starter            string
+	Type               string
 }
 
 func (c Competition) FormattedDate() string {

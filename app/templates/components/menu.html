@@ -9,6 +9,7 @@
       </div>
 
       <!-- Desktop Menu -->
+       <!-- TODO make it configurable, generate from the model -->
       <ul class="hidden lg:flex space-x-6" x-data="{ currentPath: window.location.pathname }"
         @htmx:pushed-into-history.window="currentPath = window.location.pathname">
         <li><a href="/competition-list" 
