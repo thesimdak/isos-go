@@ -17,7 +17,7 @@
       class="absolute w-full bg-white  shadow-md mt-1 max-h-40 overflow-y-auto z-10">
       {{ range .Seasons }}
       <div
-        @click="selected = '{{ . }}'; open = false; $refs.hiddenInput.value = '{{ . }}'; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: false }))"
+        @click="selected = '{{ . }}'; open = false; $refs.hiddenInput.value = '{{ . }}'; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))"
         class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
         Sezóna {{ . }}
       </div>
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="competition-type" name="competition-type" x-ref="hiddenInput" hx-get="/competitions"
+    <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-get="/competitions"
       hx-trigger="change" hx-target="#competition-list">
   </div>
 

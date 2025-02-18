@@ -1,15 +1,23 @@
 {{ define "results.html" }}
-<div class="border-b-1 border-gray-300">
-  <div x-data="{ 
+<div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
+    {{ .Name }}
+</div>
+<div x-data="{ 
     open: false, 
-    selectedLabel: '{{ (index .Categories 0).Label }}', 
-    selectedID: '{{ (index .Categories 0).ID }}' 
+    selectedLabel: '{{ if .CategoryLabel }}{{ .CategoryLabel }}{{ else }}{{ (index .Categories 0).Label }}{{ end }}',
+    selectedID: '{{ if .CategoryID }}{{ .CategoryID }}{{ else }}{{ (index .Categories 0).ID }}{{ end }}' 
   }"
   @htmx:load.window.once="() => {
+    if ('{{ .CategoryID }}' !== '') { 
+      selectedID = '{{ .CategoryID }}'; // Use provided CategoryID if available
+    }
     $refs.hiddenInput.value = selectedID;
     $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+    htmx.trigger($refs.hiddenInput, 'change'); // Ensure HTMX fetches data
   }"
   class="relative w-64">
+
+
     
     <!-- Selected Value (Trigger for Dropdown) -->
     <button @click="open = !open"
@@ -22,7 +30,10 @@
       class="absolute w-full bg-white shadow-md mt-1 max-h-40 overflow-y-auto z-10">
       {{ range .Categories }}
       <div
-        @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; $refs.hiddenInput.value = selectedID; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: false }))"
+        @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; 
+        $refs.hiddenInput.value = selectedID; 
+        $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
+        history.pushState(null, '', `?categoryId=${selectedID}`);"
         class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
         {{ .Label }}
       </div>
@@ -30,8 +41,8 @@
     </div>
 
     <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="category" name="category" x-ref="hiddenInput" hx-get="/results/122/category/12"
-      hx-trigger="change" hx-target="#competition-list">
+    <input type="hidden" id="category" name="category" x-ref="hiddenInput" :hx-get="`/result-table/{{ .CompetitionID }}`"
+      hx-trigger="load, change" hx-target="#competition-list">
   </div>
 </div>
 
