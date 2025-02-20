@@ -77,6 +77,25 @@ func Initialize(db *sql.DB) {
 		})
 	})
 
+	router.GET("/top-results", func(c *gin.Context) {
+		var categories []models.Category
+		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
+		categories = append(categories, models.Category{ID: 123, Label: "Zeny"})
+		categories = append(categories, models.Category{ID: 124, Label: "Dorostenci"})
+		renderPartial(c, "top-results.html", gin.H{
+			"Categories": categories,
+		})
+	})
+
+	router.GET("/management", func(c *gin.Context) {
+		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025}
+		renderPartial(c, "management.html", gin.H{
+			"Seasons": seasons,
+		})
+	})
+
+	// partials
+	// season dropdown
 	router.GET("/result-table/:competitionId", func(c *gin.Context) {
 		//id := c.Param("id")
 		var participationResults []models.ParticipationResult
@@ -87,23 +106,14 @@ func Initialize(db *sql.DB) {
 		})
 	})
 
-	router.GET("/top-results", func(c *gin.Context) {
-		var categories []models.Category
-		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
-		categories = append(categories, models.Category{ID: 123, Label: "Zeny"})
-		categories = append(categories, models.Category{ID: 124, Label: "Dorostenci"})
-		renderPartial(c, "top-results.html", gin.H{
-			"Categories": categories,
+	router.GET("/top-result-table", func(c *gin.Context) {
+		//id := c.Param("id")
+		var topParticipationResults []models.TopParticipationResults
+		topParticipationResults = append(topParticipationResults, models.TopParticipationResults{Rank: 1, Name: "Jiri Novak", YearOfBirth: "1992", Organization: "Sokol Liben", CompetitionName: "Memorial Bedricha Supcika", Top: "5.56"})
+		topParticipationResults = append(topParticipationResults, models.TopParticipationResults{Rank: 2, Name: "Martin Simon", YearOfBirth: "1990", Organization: "Sokol Liben", CompetitionName: "Pisecky Splhavec", Top: "5.56"})
+		renderPartial(c, "top-result-table.html", gin.H{
+			"TopParticipationResults": topParticipationResults,
 		})
-	})
-	router.GET("/management", func(c *gin.Context) {
-		renderPartial(c, "management.html", gin.H{})
-	})
-
-	// partials
-	// season dropdown
-	router.GET("/seasons", func(c *gin.Context) {
-		renderPartial(c, "seasons.html", nil)
 	})
 
 	// Load templates

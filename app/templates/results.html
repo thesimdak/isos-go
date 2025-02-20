@@ -12,8 +12,7 @@
       selectedID = '{{ .CategoryID }}'; // Use provided CategoryID if available
     }
     $refs.hiddenInput.value = selectedID;
-    $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-    htmx.trigger($refs.hiddenInput, 'change'); // Ensure HTMX fetches data
+    $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
   }"
   class="relative w-64">
 
@@ -42,12 +41,12 @@
 
     <!-- Hidden Input for HTMX -->
     <input type="hidden" id="category" name="category" x-ref="hiddenInput" :hx-get="`/result-table/{{ .CompetitionID }}`"
-      hx-trigger="load, change" hx-target="#competition-list">
+      hx-trigger="load, change" hx-target="#result-list">
   </div>
 </div>
 
-<div id="competition-list">
-  <!-- Competition list will be dynamically loaded here -->
+<div id="result-list">
+  <!-- result list will be dynamically loaded here -->
 </div>
 
 {{ end }}

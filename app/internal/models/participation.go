@@ -1,11 +1,11 @@
 package models
 
 type Participation struct {
-	ID           int64        `json:"id"`
-	RopeClimber  *RopeClimber `json:"roleClimber"`
-	Competition  *Competition `json:"competition"`
-	Category     *Category    `json:"category"`
-	ResultRank   int16        `json:"resultRank"`
-	TimeList     []*Time      `json:"timeList"`
-	Organization string       `json:"organization"`
+	ID           int64
+	RopeClimber  *RopeClimber
+	Competition  *Competition
+	Category     *Category
+	ResultRank   int16
+	TimeList     []*Time
+	Organization string
 }
