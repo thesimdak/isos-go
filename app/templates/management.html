@@ -1,39 +1,38 @@
 {{ define "management.html" }}
-<div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
+<div x-data="{ open: false, selected: '{{ index .Seasons 0 }}' }" @htmx:load.window.once="() => {
+  $refs.hiddenInput.value = selected;
+  $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+}" >
+  <div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
     Administrace
-</div>
-<div class="border-b-1 border-gray-300">
-  <div x-data="{ open: false, selected: '{{ index .Seasons 0 }}' }"
-  @htmx:load.window.once="() => {
-    $refs.hiddenInput.value = selected;
-    $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-}"
-  class="relative w-64">
-    <!-- Selected Value (Trigger for Dropdown) -->
-    <button @click="open = !open"
-      class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none cursor-pointer">
-      Sezóna <span x-text="selected"></span> ▼
-    </button>
+  </div>
+  <div class="border-b-1 border-gray-300">
+    <div class="relative w-64">
+      <!-- Selected Value (Trigger for Dropdown) -->
+      <button @click="open = !open"
+        class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none cursor-pointer">
+        Sezóna <span x-text="selected"></span> ▼
+      </button>
 
-    <!-- Dropdown List -->
-    <div x-show="open" @click.away="open = false"
-      class="absolute w-full bg-white  shadow-md mt-1 max-h-40 overflow-y-auto z-10">
-      {{ range .Seasons }}
-      <div
-        @click="selected = '{{ . }}'; open = false; $refs.hiddenInput.value = '{{ . }}'; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))"
-        class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
-        Sezóna {{ . }}
+      <!-- Dropdown List -->
+      <div x-show="open" @click.away="open = false"
+        class="absolute w-full bg-white  shadow-md mt-1 max-h-40 overflow-y-auto z-10">
+        {{ range .Seasons }}
+        <div
+          @click="selected = '{{ . }}'; open = false; $refs.hiddenInput.value = '{{ . }}'; $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))"
+          class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
+          Sezóna {{ . }}
+        </div>
+        {{ end }}
       </div>
-      {{ end }}
+
+      <!-- Hidden Input for HTMX -->
+      <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-get="/competitions" hx-trigger="change"
+        hx-target="#competition-list">
     </div>
 
-    <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-get="/competitions"
-      hx-trigger="load, change" hx-target="#competition-list">
   </div>
-
 </div>
-
 <div id="competition-list">
   <!-- Competition list will be dynamically loaded here -->
 </div>

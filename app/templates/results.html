@@ -1,23 +1,19 @@
 {{ define "results.html" }}
-<div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
-    {{ .Name }}
-</div>
 <div x-data="{ 
-    open: false, 
-    selectedLabel: '{{ if .CategoryLabel }}{{ .CategoryLabel }}{{ else }}{{ (index .Categories 0).Label }}{{ end }}',
-    selectedID: '{{ if .CategoryID }}{{ .CategoryID }}{{ else }}{{ (index .Categories 0).ID }}{{ end }}' 
-  }"
-  @htmx:load.window.once="() => {
-    if ('{{ .CategoryID }}' !== '') { 
-      selectedID = '{{ .CategoryID }}'; // Use provided CategoryID if available
-    }
-    $refs.hiddenInput.value = selectedID;
-    $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
-  }"
-  class="relative w-64">
-
-
-    
+  open: false, 
+  selectedLabel: '{{ if .CategoryLabel }}{{ .CategoryLabel }}{{ else }}{{ (index .Categories 0).Label }}{{ end }}',
+  selectedID: '{{ if .CategoryID }}{{ .CategoryID }}{{ else }}{{ (index .Categories 0).ID }}{{ end }}' 
+}" @htmx:load.window.once="() => {
+  if ('{{ .CategoryID }}' !== '') { 
+    selectedID = '{{ .CategoryID }}'; // Use provided CategoryID if available
+  }
+  $refs.hiddenInput.value = selectedID;
+  $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
+}">
+  <div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
+    {{ .Name }}
+  </div>
+  <div class="relative w-64">
     <!-- Selected Value (Trigger for Dropdown) -->
     <button @click="open = !open"
       class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none cursor-pointer">
@@ -28,8 +24,7 @@
     <div x-show="open" @click.away="open = false"
       class="absolute w-full bg-white shadow-md mt-1 max-h-40 overflow-y-auto z-10">
       {{ range .Categories }}
-      <div
-        @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; 
+      <div @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; 
         $refs.hiddenInput.value = selectedID; 
         $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
         history.pushState(null, '', `?categoryId=${selectedID}`);"
@@ -40,13 +35,12 @@
     </div>
 
     <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="category" name="category" x-ref="hiddenInput" :hx-get="`/result-table/{{ .CompetitionID }}`"
-      hx-trigger="load, change" hx-target="#result-list">
+    <input type="hidden" id="category" name="category" x-ref="hiddenInput"
+      :hx-get="`/result-table/{{ .CompetitionID }}`" hx-trigger="change" hx-target="#result-list">
   </div>
 </div>
 
 <div id="result-list">
   <!-- result list will be dynamically loaded here -->
 </div>
-
 {{ end }}

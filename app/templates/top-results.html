@@ -1,47 +1,47 @@
 {{ define "top-results.html" }}
-<div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
-    Historický žebříček
-</div>
-<div x-data="{ 
-    open: false, 
-    selectedLabel: '{{ (index .Categories 0).Label }}',
-    selectedID: '{{ (index .Categories 0).ID }}' 
-  }"
-  @htmx:load.window.once="() => {
-    $refs.hiddenInput.value = selectedID;
-    $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-  }"
-  class="relative w-64">
+<div x-data="{ open: false, 
+  selectedLabel: '{{ (index .Categories 0).Label }}',
+  selectedID: '{{ (index .Categories 0).ID }}'}"
+@htmx:load.window.once="() => {
+  $refs.hiddenInput.value = selectedID;
+  $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+}">
+  <div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
+      Historický žebříček
+  </div>
+  <div class="border-b-1 border-gray-300">
+    <div 
+    class="relative w-64">
+      <!-- Selected Value (Trigger for Dropdown) -->
+      <button @click="open = !open"
+        class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none cursor-pointer">
+        <span x-text="selectedLabel"></span> ▼
+      </button>
 
-    <!-- Selected Value (Trigger for Dropdown) -->
-    <button @click="open = !open"
-      class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none cursor-pointer">
-      <span x-text="selectedLabel"></span> ▼
-    </button>
-
-    <!-- Dropdown List -->
-    <div x-show="open" @click.away="open = false"
-      class="absolute w-full bg-white shadow-md mt-1 max-h-40 overflow-y-auto z-10">
-      {{ range .Categories }}
-      <div
-        @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; 
-        $refs.hiddenInput.value = selectedID; 
-        $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))"
-        class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
-        {{ .Label }}
+      <!-- Dropdown List -->
+      <div x-show="open" @click.away="open = false"
+        class="absolute w-full bg-white  shadow-md mt-1 max-h-40 overflow-y-auto z-10">
+        {{ range .Categories }}
+        <div
+          @click="selectedID = '{{ .ID }}'; 
+          selectedLabel = '{{ .Label }}'; 
+          open = false; 
+          $refs.hiddenInput.value = '{{ .ID }}'; 
+          $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))"
+          class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
+          {{ .Label }}
+        </div>
+        {{ end }}
       </div>
-      {{ end }}
+
+      <!-- Hidden Input for HTMX -->
+      <input type="hidden" id="category" name="category" x-ref="hiddenInput" hx-get="/top-result-table"
+        hx-trigger="change" hx-target="#top-result-table">
     </div>
 
-    <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="category" name="category" x-ref="hiddenInput" 
-      hx-get="/top-result-table"
-      hx-trigger="load, change" hx-target="#top-result-list">
   </div>
 </div>
-
-<div id="top-result-list">
-  <!-- Competition list will be dynamically loaded here -->
+<div id="top-result-table">
+  <!-- Top result table will be dynamically loaded here -->
 </div>
-
 {{ end }}

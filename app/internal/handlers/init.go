@@ -82,8 +82,10 @@ func Initialize(db *sql.DB) {
 		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
 		categories = append(categories, models.Category{ID: 123, Label: "Zeny"})
 		categories = append(categories, models.Category{ID: 124, Label: "Dorostenci"})
+		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025}
 		renderPartial(c, "top-results.html", gin.H{
 			"Categories": categories,
+			"Seasons":    seasons,
 		})
 	})
 
