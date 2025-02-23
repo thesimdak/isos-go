@@ -82,10 +82,8 @@ func Initialize(db *sql.DB) {
 		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
 		categories = append(categories, models.Category{ID: 123, Label: "Zeny"})
 		categories = append(categories, models.Category{ID: 124, Label: "Dorostenci"})
-		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025}
 		renderPartial(c, "top-results.html", gin.H{
 			"Categories": categories,
-			"Seasons":    seasons,
 		})
 	})
 
@@ -118,20 +116,20 @@ func Initialize(db *sql.DB) {
 		})
 	})
 
-	// Load templates
-	router.SetHTMLTemplate(parseTemplates())
-
 	// Dynamic competition list route
 	router.GET("/competitions", func(c *gin.Context) {
 		var competitions []models.Competition
 		competitions = append(competitions, models.Competition{ID: 122, Name: "Memorial Bedricha Supcika 2024", Date: time.Now()})
 		competitions = append(competitions, models.Competition{ID: 123, Name: "Modransky Tarzan", Date: time.Now()})
-
+		showDelete := c.Query("showDelete")
 		c.HTML(http.StatusOK, "competitions.html", gin.H{
 			"Competitions": competitions,
+			"ShowDelete":   showDelete,
 		})
 	})
 
+	// Load templates
+	router.SetHTMLTemplate(parseTemplates())
 	router.Run(":8080")
 }
 
