@@ -26,5 +26,9 @@ func (h *UploadHandler) Upload(c *gin.Context) {
 
 	// Initialize specific repositories
 	h.CompetitionService.UploadResults(file)
-	c.JSON(http.StatusOK, nil)
+
+	seasons := h.CompetitionService.GetSeasons()
+	c.HTML(http.StatusOK, "management.html", gin.H{
+		"Seasons": seasons,
+	})
 }

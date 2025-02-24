@@ -3,9 +3,14 @@
   $refs.hiddenInput.value = selected;
   $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
 }" >
-  <div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
+<div class="flex justify-between border-b-1 border-gray-300">
+  <div class="text:xl md:text-2xl text-gray-600 px-2 py-2">
     Administrace
   </div>
+  <div class="text:lg md:text-lg text-gray-600 border-b-1 border-gray-300 px-2 py-2">
+    <button hx-post="/upload" @click.stop="open = false; /* Add your delete logic here */" class="px-4 py-2 bg-gray-600 text-white rounded cursor-pointer hover:bg-gray-800">Upload</button>
+  </div>
+</div>
   <div class="border-b-1 border-gray-300">
     <div class="relative w-64">
       <!-- Selected Value (Trigger for Dropdown) -->

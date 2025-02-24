@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/thesimdak/goisos/internal/handlers/upload"
 	models "github.com/thesimdak/goisos/internal/models"
 	"github.com/thesimdak/goisos/internal/repository"
@@ -37,7 +39,7 @@ func Initialize(db *sql.DB) {
 	uploadHandler := upload.NewUploadHandler(competitionService)
 	router.Static("/static", "./static")
 
-	router.POST("/upload", uploadHandler.Upload)
+	router.POST("/upload", BasicAuthMiddleware(), uploadHandler.Upload)
 	// pages
 	router.GET("/", func(c *gin.Context) {
 		seasons := competitionService.GetSeasons()
@@ -45,13 +47,23 @@ func Initialize(db *sql.DB) {
 			"Seasons": seasons,
 		})
 	})
+
+	router.DELETE("/results/:competitionId", BasicAuthMiddleware(), func(c *gin.Context) {
+		// TODO: add logic for deleteion
+		seasons := competitionService.GetSeasons()
+		renderPartial(c, "management.html", gin.H{
+			"Seasons": seasons,
+		})
+	})
+
 	router.GET("/competition-list", func(c *gin.Context) {
 		//seasons := competitionService.GetSeasons()
-		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025}
+		seasons := competitionService.GetSeasons()
 		renderPartial(c, "competition-list.html", gin.H{
 			"Seasons": seasons,
 		})
 	})
+
 	router.GET("/results/:competitionId", func(c *gin.Context) {
 		//id := c.Param("id")
 		var categories []models.Category
@@ -87,8 +99,8 @@ func Initialize(db *sql.DB) {
 		})
 	})
 
-	router.GET("/management", func(c *gin.Context) {
-		seasons := []int16{2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025}
+	router.GET("/management", BasicAuthMiddleware(), func(c *gin.Context) {
+		seasons := competitionService.GetSeasons()
 		renderPartial(c, "management.html", gin.H{
 			"Seasons": seasons,
 		})
@@ -122,7 +134,7 @@ func Initialize(db *sql.DB) {
 		competitions = append(competitions, models.Competition{ID: 122, Name: "Memorial Bedricha Supcika 2024", Date: time.Now()})
 		competitions = append(competitions, models.Competition{ID: 123, Name: "Modransky Tarzan", Date: time.Now()})
 		showDelete := c.Query("showDelete")
-		c.HTML(http.StatusOK, "competitions.html", gin.H{
+		renderPartial(c, "competitions.html", gin.H{
 			"Competitions": competitions,
 			"ShowDelete":   showDelete,
 		})
@@ -157,4 +169,22 @@ func parseTemplates() *template.Template {
 	tmpl = template.Must(tmpl.ParseGlob("templates/components/*.html"))
 
 	return tmpl
+}
+
+func BasicAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println("Warning: .env file not found, using default values")
+		}
+		username := os.Getenv("BASIC_AUTH_USERNAME")
+		password := os.Getenv("BASIC_AUTH_PASSWORD")
+		user, pass, hasAuth := c.Request.BasicAuth()
+		if !hasAuth || user != username || pass != password {
+			c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		c.Next()
+	}
 }
