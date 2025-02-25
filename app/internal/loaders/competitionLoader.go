@@ -1,6 +1,7 @@
 package loaders
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/thesimdak/goisos/internal/models"
@@ -35,10 +36,11 @@ func LoadCompetition(f *excelize.File) *models.Competition {
 	competition.Name, _ = f.GetCellValue(InfoSheet, YearNameCell)
 
 	dateStr, _ := f.GetCellValue(InfoSheet, DateCell)
-	if date, err := time.Parse("1/2/2006", dateStr); err == nil {
+	if date, err := time.Parse("2.1.2006", dateStr); err == nil {
 		competition.Date = date
 	}
-
+	_, err := time.Parse("1.2.2006", dateStr)
+	fmt.Print(err)
 	competition.Place, _ = f.GetCellValue(InfoSheet, PlaceCell)
 	competition.Judge, _ = f.GetCellValue(InfoSheet, JudgeCell)
 	competition.SensorInstallation, _ = f.GetCellValue(InfoSheet, SensorInstallationCell)

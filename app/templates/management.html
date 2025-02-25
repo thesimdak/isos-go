@@ -7,9 +7,23 @@
   <div class="text:xl md:text-2xl text-gray-600 px-2 py-2">
     Administrace
   </div>
-  <div class="text:lg md:text-lg text-gray-600 border-b-1 border-gray-300 px-2 py-2">
-    <button hx-post="/upload" @click.stop="open = false; /* Add your delete logic here */" class="px-4 py-2 bg-gray-600 text-white rounded cursor-pointer hover:bg-gray-800">Upload</button>
-  </div>
+ 
+  <!--Upload button-->
+  <div class="text-lg text-gray-600 border-b border-gray-300 px-2 py-2">
+    <form hx-post="/upload" hx-encoding="multipart/form-data"
+    hx-target="#main-content" 
+    hx-swap="innerHTML">
+        <!-- Custom upload button -->
+        <label for="myfile" class="px-4 py-2 bg-gray-600 text-white rounded cursor-pointer hover:bg-gray-800">
+          Nahrát závod
+        </label>
+
+        <!-- Hidden file input -->
+        <input type="file" id="myfile" name="myfile" accept=".xlsx,.xls" class="hidden" autocomplete="off" hx-trigger="change once" 
+               hx-on:change="this.form.requestSubmit()" />
+    </form>
+</div>
+
 </div>
   <div class="border-b-1 border-gray-300">
     <div class="relative w-64">
