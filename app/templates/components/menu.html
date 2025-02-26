@@ -9,7 +9,6 @@
       </div>
 
       <!-- Desktop Menu -->
-       <!-- TODO make it configurable, generate from the model -->
       <ul class="hidden lg:flex space-x-6" x-data="{ currentPath: window.location.pathname }"
         @htmx:pushed-into-history.window="currentPath = window.location.pathname">
         <li><a href="/competition-list" 
@@ -26,6 +25,7 @@
           hx-push-url="true"
           class="hover:text-blue-600"
           :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a></li>
+           <!-- TODO Add statistiky, nominace, kontakt-->
         <li><a href="/management"
           hx-get="/management"
           hx-target="#main-content"

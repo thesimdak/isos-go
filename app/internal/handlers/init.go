@@ -6,7 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
-	"time"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -38,6 +38,10 @@ func Initialize(db *sql.DB) {
 	// Step 4: Initialize the handler
 	uploadHandler := upload.NewUploadHandler(competitionService)
 	router.Static("/static", "./static")
+	router.GET("/logout", func(c *gin.Context) {
+		c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
+		c.String(http.StatusUnauthorized, "Logging out...")
+	})
 
 	router.POST("/upload", BasicAuthMiddleware(), uploadHandler.Upload)
 	// pages
@@ -130,9 +134,13 @@ func Initialize(db *sql.DB) {
 
 	// Dynamic competition list route
 	router.GET("/competitions", func(c *gin.Context) {
-		var competitions []models.Competition
-		competitions = append(competitions, models.Competition{ID: 122, Name: "Memorial Bedricha Supcika 2024", Date: time.Now()})
-		competitions = append(competitions, models.Competition{ID: 123, Name: "Modransky Tarzan", Date: time.Now()})
+		seasonParam := c.Query("season")
+		seasonInt, err := strconv.Atoi(seasonParam) // Convert to int
+		if err != nil {
+			c.JSON(400, gin.H{"error": "Invalid season parameter"})
+			return
+		}
+		competitions := competitionService.GetCompetitions(seasonInt)
 		showDelete := c.Query("showDelete")
 		renderPartial(c, "competitions.html", gin.H{
 			"Competitions": competitions,

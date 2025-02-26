@@ -2,29 +2,39 @@
 <div x-data="{ open: false, selected: '{{ index .Seasons 0 }}' }" @htmx:load.window.once="() => {
   $refs.hiddenInput.value = selected;
   $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-}" >
-<div class="flex justify-between border-b-1 border-gray-300">
-  <div class="text:xl md:text-2xl text-gray-600 px-2 py-2">
-    Administrace
-  </div>
- 
-  <!--Upload button-->
-  <div class="text-lg text-gray-600 border-b border-gray-300 px-2 py-2">
-    <form hx-post="/upload" hx-encoding="multipart/form-data"
-    hx-target="#main-content" 
-    hx-swap="innerHTML">
+}">
+  <div class="flex justify-between border-b-1 border-gray-300">
+    <div class="text:xl md:text-2xl text-gray-600 px-2 py-2">
+      Administrace
+    </div>
+    <div class="flex justify-between">
+    <!--Upload button-->
+    <div class="text-lg text-gray-600 border-b border-gray-300 px-2 py-2">
+      <form hx-post="/upload" hx-encoding="multipart/form-data" hx-target="#main-content" hx-swap="innerHTML">
         <!-- Custom upload button -->
         <label for="myfile" class="px-4 py-2 bg-gray-600 text-white rounded cursor-pointer hover:bg-gray-800">
           Nahrát závod
         </label>
 
         <!-- Hidden file input -->
-        <input type="file" id="myfile" name="myfile" accept=".xlsx,.xls" class="hidden" autocomplete="off" hx-trigger="change once" 
-               hx-on:change="this.form.requestSubmit()" />
-    </form>
-</div>
+        <input type="file" id="myfile" name="myfile" accept=".xlsx,.xls" class="hidden" autocomplete="off"
+          hx-trigger="change once" hx-on:change="this.form.requestSubmit()" />
+      </form>
+    </div>
 
-</div>
+    <!--Logout button-->
+    <div class="text-lg px-2 py-2">
+      <a href="/logout"
+         hx-get="/logout"
+         hx-trigger="click"
+         hx-on::after-request="window.location.href='/'"
+         class="bg-white border border-gray-600 text-gray-600 rounded px-4 py-2 hover:bg-gray-100">
+        Logout
+      </a>
+    </div>
+    
+  </div>
+  </div>
   <div class="border-b-1 border-gray-300">
     <div class="relative w-64">
       <!-- Selected Value (Trigger for Dropdown) -->
@@ -46,8 +56,8 @@
       </div>
 
       <!-- Hidden Input for HTMX -->
-      <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-get="/competitions?showDelete=true" hx-trigger="change"
-        hx-target="#competition-list">
+      <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-get="/competitions?showDelete=true"
+        hx-trigger="change" hx-target="#competition-list">
     </div>
 
   </div>

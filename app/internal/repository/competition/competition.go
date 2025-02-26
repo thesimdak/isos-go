@@ -110,3 +110,55 @@ func (repo *CompetitionRepository) FindCompetition(name string, date time.Time) 
 
 	return &competition
 }
+
+func (repo *CompetitionRepository) FindAllCompetitionsBySeason(season int) ([]models.Competition, error) {
+	query := `
+        SELECT id, competition_name, name, date, place, jugde, sensor_installation, starter, type
+        FROM competition where YEAR(date) = ?`
+
+	rows, err := repo.DB.Query(query, season)
+	if err != nil {
+		return nil, err // Return an error if the query fails
+	}
+	defer rows.Close() // Ensure the rows are closed after we are done
+
+	var competitions []models.Competition
+
+	// Iterate over the rows to populate the slice of competitions
+	for rows.Next() {
+		var competition models.Competition
+		var dateBytes []byte
+
+		err := rows.Scan(
+			&competition.ID,
+			&competition.CompetitionName,
+			&competition.Name,
+			&dateBytes,
+			&competition.Place,
+			&competition.Judge,
+			&competition.SensorInstallation,
+			&competition.Starter,
+			&competition.Type,
+		)
+		if err != nil {
+			return nil, err // Return an error if scanning fails
+		}
+
+		// Parse the date manually if it's in []byte format
+		parsedDate, err := time.Parse("2006-01-02", string(dateBytes))
+		if err != nil {
+			return nil, err // Return an error if parsing the date fails
+		}
+		competition.Date = parsedDate // Assign the parsed date to the competition struct
+
+		// Add the competition to the slice
+		competitions = append(competitions, competition)
+	}
+
+	// Check for any errors encountered during iteration
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return competitions, nil
+}
