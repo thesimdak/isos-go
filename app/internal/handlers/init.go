@@ -54,6 +54,9 @@ func Initialize(db *sql.DB) {
 
 	router.DELETE("/results/:competitionId", BasicAuthMiddleware(), func(c *gin.Context) {
 		// TODO: add logic for deleteion
+		idStr := c.Param("competitionId")
+		id, _ := strconv.ParseInt(idStr, 10, 64)
+		competitionService.DeleteCompetition(id)
 		seasons := competitionService.GetSeasons()
 		renderPartial(c, "management.html", gin.H{
 			"Seasons": seasons,
@@ -61,7 +64,6 @@ func Initialize(db *sql.DB) {
 	})
 
 	router.GET("/competition-list", func(c *gin.Context) {
-		//seasons := competitionService.GetSeasons()
 		seasons := competitionService.GetSeasons()
 		renderPartial(c, "competition-list.html", gin.H{
 			"Seasons": seasons,

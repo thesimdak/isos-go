@@ -12,6 +12,15 @@ type CompetitionRepository struct {
 	*repository.Repository
 }
 
+func (repo *CompetitionRepository) Delete(id int64) {
+	query := `DELETE FROM competition WHERE id = ?`
+
+	repo.DB.Exec(
+		query,
+		id,
+	)
+}
+
 // NewCompetitionRepository creates a new CompetitionRepository instance
 func NewCompetitionRepository(repo *repository.Repository) *CompetitionRepository {
 	return &CompetitionRepository{Repository: repo}
@@ -65,7 +74,8 @@ func (repo *CompetitionRepository) SaveCompetition(competition *models.Competiti
 		competition.Type,
 	)
 	if err != nil {
-		log.Printf("Error inserting competition: %v", err)
+		log.Printf("Error while saving competition: %v", err)
+		panic("Error while saving competition")
 	}
 	id, _ := result.LastInsertId()
 	competition.ID = id

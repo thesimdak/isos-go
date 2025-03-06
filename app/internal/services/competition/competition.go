@@ -23,6 +23,12 @@ type CompetitionService struct {
 	TimeRepo          *time.TimeRepository
 }
 
+func (svc *CompetitionService) DeleteCompetition(id int64) {
+	svc.TimeRepo.DeleteByCompetitionId(id)
+	svc.ParticipationRepo.DeleteByCompetitionId(id)
+	svc.competitionRepo.Delete(id)
+}
+
 func NewCompetitionService(competitionRepository *competition.CompetitionRepository,
 	categoryRepository *category.CategoryRepository,
 	ropeClimberRepository *ropeclimber.RopeClimberRepository,
@@ -135,7 +141,7 @@ func stringToInt16(value string) int16 {
 }
 
 func stringToFloat32(value string) float32 {
-	if value == "x" {
+	if value == "x" || value == "X" || value == "-" {
 		return 999
 	}
 	num, err := strconv.ParseFloat(value, 32)

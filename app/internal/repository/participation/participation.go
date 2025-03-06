@@ -15,6 +15,15 @@ func NewParticipationRepository(repo *repository.Repository) *ParticipationRepos
 	return &ParticipationRepository{Repository: repo}
 }
 
+func (repo *ParticipationRepository) DeleteByCompetitionId(id int64) {
+	query := `DELETE FROM participation WHERE competition_id = ?`
+
+	repo.DB.Exec(
+		query,
+		id,
+	)
+}
+
 func (repo *ParticipationRepository) DeleteByCompetitionIdAndCategoryIdAndRopeClimberId(p *models.Participation) {
 	query := `DELETE FROM participation WHERE competition_id = ? and category_id = ? and rope_climber_id = ?`
 

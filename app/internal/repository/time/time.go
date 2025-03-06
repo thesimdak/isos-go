@@ -29,6 +29,18 @@ func (repo *TimeRepository) DeleteByCompetitionIdAndCategoryIdAndRopeClimberId(c
 	}
 }
 
+func (repo *TimeRepository) DeleteByCompetitionId(competitionId int64) {
+	query := `DELETE t FROM time t JOIN participation p on t.participation_id = p.id WHERE p.competition_id = ?`
+	_, err := repo.DB.Exec(
+		query,
+		competitionId,
+	)
+	if err != nil {
+		log.Printf("Error inserting time: %v", err)
+		panic("Error inserting time")
+	}
+}
+
 func (repo *TimeRepository) SaveTimes(participationId int64, times []*models.Time) {
 	for _, t := range times {
 		query := `INSERT INTO time (
