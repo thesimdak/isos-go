@@ -2,14 +2,15 @@
 
 {{ range .Competitions }}
 <div class="p-4 rounded-lg shadow w-full flex justify-center items-center cursor-pointer text-gray-600"
-     hx-get="/results/{{.ID}}" 
-     hx-target="#main-content" 
+     hx-get="/results/{{.ID}}"
+     hx-target="#main-content"
      hx-swap="innerHTML"
      hx-push-url="true"
+ 
      x-data="{ open: false }">  <!-- x-data on the parent container -->
 
   <div class="competition-item flex justify-between items-center w-[90%] py-5">
-    
+
     <!-- Left section: Name + Date (70%) -->
     <div class="flex w-full space-x-4 justify-between">
       <div class="text-lg">{{ .Name }}</div>
@@ -24,19 +25,19 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
             <path d="M6 6V5a2 2 0 012-2h8a2 2 0 012 2v1h4v2H2V6h4zm2 0h8V5H8v1zM5 8v12a2 2 0 002 2h10a2 2 0 002-2V8H5zm4 2h2v8H9v-8zm4 0h2v8h-2v-8z"/>
         </svg>
-      </button>   
-      
+      </button>
+
       <!-- Confirmation Dialog inside the same Alpine scope -->
       <div x-show="open" x-cloak class="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
         <div class="bg-white p-6 rounded-lg shadow-md w-1/3 text-center">
           <p class="mb-4 text-lg">Opravdu chceš vymazat závod?</p>
           <div class="flex justify-between">
             <button @click.stop="open = false" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-600">Zpět</button>
-            <button hx-delete="/results/{{.ID}}"  hx-push-url="false" @click.stop="open = false; /* Add your delete logic here */" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800">Vymazat</button>
+            <button hx-delete="/results/{{.ID}}" hx-push-url="false" hx-indicator="#spinner" @click.stop="open = false" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800">Vymazat</button>
           </div>
         </div>
       </div>
-      
+
     </div>
     {{ end }}
 
@@ -45,5 +46,4 @@
 {{ else }}
 <p>No competitions available for the selected type.</p>
 {{ end }}
-
 {{ end }}

@@ -1,4 +1,5 @@
 {{ define "management.html" }}
+
 <div x-data="{ open: false, selected: '{{ index .Seasons 0 }}' }" @htmx:load.window.once="() => {
   $refs.hiddenInput.value = selected;
   $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
@@ -10,7 +11,7 @@
     <div class="flex justify-between">
     <!--Upload button-->
     <div class="text-lg text-gray-600 border-b border-gray-300 px-2 py-2">
-      <form hx-post="/upload" hx-encoding="multipart/form-data" hx-target="#main-content" hx-swap="innerHTML">
+      <form hx-post="/upload" hx-indicator="#spinner" hx-encoding="multipart/form-data" hx-target="#main-content" hx-swap="innerHTML">
         <!-- Custom upload button -->
         <label for="myfile" class="px-4 py-2 bg-gray-600 text-white rounded cursor-pointer hover:bg-gray-800">
           Nahrát závod
@@ -62,6 +63,9 @@
 
   </div>
 </div>
+
+<!-- Spinner Element -->
+
 <div id="competition-list">
   <!-- Competition list will be dynamically loaded here -->
 </div>
