@@ -16,9 +16,11 @@ import (
 	"github.com/thesimdak/goisos/internal/repository/category"
 	"github.com/thesimdak/goisos/internal/repository/competition"
 	"github.com/thesimdak/goisos/internal/repository/participation"
+	"github.com/thesimdak/goisos/internal/repository/result"
 	"github.com/thesimdak/goisos/internal/repository/ropeclimber"
 	timeRepo "github.com/thesimdak/goisos/internal/repository/time"
 	competitionService "github.com/thesimdak/goisos/internal/services/competition"
+	resultService "github.com/thesimdak/goisos/internal/services/result"
 )
 
 func Initialize(db *sql.DB) {
@@ -31,8 +33,10 @@ func Initialize(db *sql.DB) {
 	ropeClimberRepo := ropeclimber.NewRopeClimberRepository(repo)
 	timeRepo := timeRepo.NewTimeRepository(repo)
 	participationRepo := participation.NewParticipationRepository(repo)
+	resultRepo := result.NewResultRepository(repo)
 
 	// Step 3: Initialize the service
+	resultService := resultService.NewResultService(resultRepo)
 	competitionService := competitionService.NewCompetitionService(competitionRepo, categoryRepo, ropeClimberRepo, timeRepo, participationRepo)
 
 	// Step 4: Initialize the handler
@@ -53,7 +57,6 @@ func Initialize(db *sql.DB) {
 	})
 
 	router.DELETE("/results/:competitionId", BasicAuthMiddleware(), func(c *gin.Context) {
-		// TODO: add logic for deleteion
 		idStr := c.Param("competitionId")
 		id, _ := strconv.ParseInt(idStr, 10, 64)
 		competitionService.DeleteCompetition(id)
@@ -72,11 +75,9 @@ func Initialize(db *sql.DB) {
 
 	router.GET("/results/:competitionId", func(c *gin.Context) {
 		//id := c.Param("id")
-		var categories []models.Category
-		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
-		categories = append(categories, models.Category{ID: 123, Label: "Zeny"})
-		categories = append(categories, models.Category{ID: 124, Label: "Dorostenci"})
-		competitionId, _ := c.Params.Get("competitionId")
+		competitionId := c.Param("competitionId")
+		categories := categoryRepo.GetCategoriesByCompetitionId(competitionId)
+		competition := competitionRepo.FindById(competitionId)
 		categoryId := c.Query("categoryId")
 
 		var categoryLabel string
@@ -90,7 +91,7 @@ func Initialize(db *sql.DB) {
 			"CompetitionID": competitionId,
 			"CategoryID":    categoryId,
 			"CategoryLabel": categoryLabel,
-			"Name":          "Memorial Bedricha Supcika",
+			"Name":          competition.Name,
 			"Categories":    categories,
 		})
 	})
@@ -115,10 +116,9 @@ func Initialize(db *sql.DB) {
 	// partials
 	// season dropdown
 	router.GET("/result-table/:competitionId", func(c *gin.Context) {
-		//id := c.Param("id")
-		var participationResults []models.ParticipationResult
-		participationResults = append(participationResults, models.ParticipationResult{Rank: 1, Name: "Jiri Novak", YearOfBirth: "1992", Organization: "Sokol Liben", Time1: "9.56", Time2: "9.56", Time3: "-", Time4: "5.56", Top: "5.56"})
-		participationResults = append(participationResults, models.ParticipationResult{Rank: 2, Name: "Martin Simon", YearOfBirth: "1990", Organization: "Sokol Liben", Time1: "11.56", Time2: "9.56", Time3: "-", Time4: "5.56", Top: "11.56"})
+		competitionId := c.Param("competitionId")
+		categoryId := c.Query("categoryId")
+		participationResults := resultService.GetResults(competitionId, categoryId)
 		renderPartial(c, "result-table.html", gin.H{
 			"ParticipationResults": participationResults,
 		})

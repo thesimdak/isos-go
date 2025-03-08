@@ -12,6 +12,45 @@ type CompetitionRepository struct {
 	*repository.Repository
 }
 
+func (repo *CompetitionRepository) FindById(competitionId string) *models.Competition {
+	query := `
+        SELECT id, competition_name, name, date, place, jugde, sensor_installation, starter, type
+        FROM competition
+        WHERE id = ?`
+
+	row := repo.DB.QueryRow(query, competitionId)
+
+	var competition models.Competition
+
+	var dateBytes []byte
+	err := row.Scan(
+		&competition.ID,
+		&competition.CompetitionName,
+		&competition.Name,
+		&dateBytes,
+		&competition.Place,
+		&competition.Judge,
+		&competition.SensorInstallation,
+		&competition.Starter,
+		&competition.Type,
+	)
+	if err != nil {
+		return nil
+	}
+
+	// Parse the date manually if it's in []byte format
+	parsedDate, err := time.Parse("2006-01-02", string(dateBytes))
+
+	competition.Date = parsedDate // Assign the parsed date to the competition struct
+
+	// Handle any errors from scanning
+	if err != nil {
+		return nil
+	}
+
+	return &competition
+}
+
 func (repo *CompetitionRepository) Delete(id int64) {
 	query := `DELETE FROM competition WHERE id = ?`
 

@@ -1,6 +1,7 @@
 package competition
 
 import (
+	"fmt"
 	"log"
 	"mime/multipart"
 	"strconv"
@@ -105,19 +106,19 @@ func (svc *CompetitionService) SaveResults(competition *models.Competition, cate
 		var times []*models.Time
 
 		if len(currentRow) > 5 {
-			time1 := &models.Time{Round: 1, Time: stringToFloat32(currentRow[5])}
+			time1 := &models.Time{Round: 1, Time: toDecimal(currentRow[5])}
 			times = append(times, time1)
 		}
 		if len(currentRow) > 6 {
-			time2 := &models.Time{Round: 2, Time: stringToFloat32(currentRow[6])}
+			time2 := &models.Time{Round: 2, Time: toDecimal(currentRow[6])}
 			times = append(times, time2)
 		}
 		if len(currentRow) > 7 {
-			time3 := &models.Time{Round: 3, Time: stringToFloat32(currentRow[7])}
+			time3 := &models.Time{Round: 3, Time: toDecimal(currentRow[7])}
 			times = append(times, time3)
 		}
 		if len(currentRow) > 8 {
-			time4 := &models.Time{Round: 4, Time: stringToFloat32(currentRow[8])}
+			time4 := &models.Time{Round: 4, Time: toDecimal(currentRow[8])}
 			times = append(times, time4)
 		}
 		rc := svc.RopeClimberRepo.EnsureRopeClimber(ropeClimber)
@@ -140,9 +141,9 @@ func stringToInt16(value string) int16 {
 	return int16(num)
 }
 
-func stringToFloat32(value string) float32 {
+func toDecimal(value string) string {
 	if value == "x" || value == "X" || value == "-" {
-		return 999
+		return "999"
 	}
 	num, err := strconv.ParseFloat(value, 32)
 	if err != nil {
@@ -150,5 +151,8 @@ func stringToFloat32(value string) float32 {
 		log.Println("Cannot convert value " + value + " into int16")
 		panic("Cannot convert value " + value + " into int16")
 	}
-	return float32(num)
+
+	formattedNum := fmt.Sprintf("%.2f", num)
+	return formattedNum
+
 }

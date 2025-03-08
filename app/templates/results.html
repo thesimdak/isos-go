@@ -27,7 +27,7 @@
       <div @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; 
         $refs.hiddenInput.value = selectedID; 
         $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
-        history.pushState(null, '', `?categoryId=${selectedID}`);"
+        history.replaceState(null, '', `?categoryId=${selectedID}`);"
         class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
         {{ .Label }}
       </div>
@@ -35,7 +35,7 @@
     </div>
 
     <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="category" name="category" x-ref="hiddenInput"
+    <input type="hidden" id="categoryId" name="categoryId" x-ref="hiddenInput"
       :hx-get="`/result-table/{{ .CompetitionID }}`" hx-trigger="change" hx-target="#result-list">
   </div>
 </div>
