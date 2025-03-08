@@ -6,10 +6,9 @@ import (
 )
 
 func main() {
-	conn := db.InitializeDB()
 	db := db.InitializeDB() // Initialize your database
 	defer db.Close()
 
-	handlers.Initialize(conn)
+	handlers.Initialize(db)
 
 }

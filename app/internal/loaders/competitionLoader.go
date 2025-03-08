@@ -35,7 +35,7 @@ func LoadCompetition(f *excelize.File) *models.Competition {
 	competition.Name, _ = f.GetCellValue(InfoSheet, YearNameCell)
 
 	dateStr, _ := f.GetCellValue(InfoSheet, DateCell)
-	dateFormats := []string{"2.1.2006", "02.01.2006", "2/1/2006", "02/01/2006", "2-1-2006", "02-01-2006", "2-1-2006", "02-01-2006", "2-1-06", "02-01-06"}
+	dateFormats := []string{"1.2.2006", "01.02.2006", "1/2/2006", "01/02/2006", "1-2-2006", "01-02-2006", "1-2-2006", "01-02-2006", "1-2-06", "01-02-06"}
 
 	for _, format := range dateFormats {
 		parsedDate, err := time.Parse(format, dateStr)
