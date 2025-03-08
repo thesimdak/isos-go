@@ -7,9 +7,15 @@
             <th class="px-1 py-1">Ročník</th>
             <th class="px-1 py-1">Oddíl</th>
             <th class="px-1 py-1">Čas 1</th>
+            {{ if gt .TimeCount 1 }}
             <th class="px-1 py-1">Čas 2</th>
+            {{ end }}
+            {{ if gt .TimeCount 2 }}
             <th class="px-1 py-1">Čas 3</th>
+            {{ end }}
+            {{ if gt .TimeCount 3 }}
             <th class="px-1 py-1">Čas 4</th>
+            {{ end }}
             <th class="px-1 py-1">Top</th>
         </tr>
     </thead>
@@ -21,9 +27,15 @@
             <td class="px-1 py-1">{{ .YearOfBirth }}</td>
             <td class="px-1 py-1">{{ .Organization }}</td>
             <td class="px-1 py-1">{{ .Time1 }}</td>
+            {{ if gt $.TimeCount 1 }}
             <td class="px-1 py-1">{{ .Time2 }}</td>
+            {{ end }}
+            {{ if gt $.TimeCount 2 }}
             <td class="px-1 py-1">{{ .Time3 }}</td>
+            {{ end }}
+            {{ if gt $.TimeCount 3 }}
             <td class="px-1 py-1">{{ .Time4 }}</td>
+            {{ end }}
             <td class="px-1 py-1">{{ .Top }}</td>
         </tr>
         {{ end }}

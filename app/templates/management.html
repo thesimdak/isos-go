@@ -1,6 +1,5 @@
 {{ define "management.html" }}
-
-<div x-data="{ open: false, selected: '{{ index .Seasons 0 }}' }" @htmx:load.window.once="() => {
+<div x-data="{ open: false, selected: '{{ if .Seasons }}{{ index .Seasons 0 }}{{ end }}' }" @htmx:load.window.once="() => {
   $refs.hiddenInput.value = selected;
   $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
 }">

@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/thesimdak/goisos/internal/handlers/upload"
 	models "github.com/thesimdak/goisos/internal/models"
 	"github.com/thesimdak/goisos/internal/repository"
@@ -24,7 +23,20 @@ import (
 )
 
 func Initialize(db *sql.DB) {
-	router := gin.Default()
+	// Attach the Logger and Recovery middleware manually
+	// Default to release mode
+	gin.SetMode(gin.ReleaseMode)
+
+	// Allow environment variable to override
+	if os.Getenv("GIN_MODE") == "debug" {
+		gin.SetMode(gin.DebugMode)
+	}
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+	// Load templates
+	router.SetHTMLTemplate(parseTemplates())
+	router.SetTrustedProxies(nil)
 
 	// Step 2: Initialize the repository
 	repo := repository.NewRepository(db)
@@ -121,6 +133,7 @@ func Initialize(db *sql.DB) {
 		participationResults := resultService.GetResults(competitionId, categoryId)
 		renderPartial(c, "result-table.html", gin.H{
 			"ParticipationResults": participationResults,
+			"TimeCount":            4,
 		})
 	})
 
@@ -150,8 +163,6 @@ func Initialize(db *sql.DB) {
 		})
 	})
 
-	// Load templates
-	router.SetHTMLTemplate(parseTemplates())
 	router.Run(":8080")
 }
 
@@ -183,10 +194,6 @@ func parseTemplates() *template.Template {
 
 func BasicAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		err := godotenv.Load()
-		if err != nil {
-			fmt.Println("Warning: .env file not found, using default values")
-		}
 		username := os.Getenv("BASIC_AUTH_USERNAME")
 		password := os.Getenv("BASIC_AUTH_PASSWORD")
 		user, pass, hasAuth := c.Request.BasicAuth()

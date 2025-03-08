@@ -163,7 +163,7 @@ func (repo *CompetitionRepository) FindCompetition(name string, date time.Time) 
 func (repo *CompetitionRepository) FindAllCompetitionsBySeason(season int) ([]models.Competition, error) {
 	query := `
         SELECT id, competition_name, name, date, place, jugde, sensor_installation, starter, type
-        FROM competition where YEAR(date) = ?`
+        FROM competition where YEAR(date) = ? order by date desc`
 
 	rows, err := repo.DB.Query(query, season)
 	if err != nil {
