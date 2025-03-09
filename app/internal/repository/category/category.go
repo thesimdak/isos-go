@@ -11,6 +11,44 @@ type CategoryRepository struct {
 	*repository.Repository
 }
 
+func (repo *CategoryRepository) GetAllCategories() any {
+	query := `
+        SELECT distinct cat.id, cat.label
+        	FROM category cat
+				JOIN participation p on p.category_id = cat.id`
+
+	rows, err := repo.DB.Query(query)
+	if err != nil {
+		return nil // Return an error if the query fails
+	}
+	defer rows.Close() // Ensure the rows are closed after we are done
+
+	var categories []models.Category
+
+	// Iterate over the rows to populate the slice of competitions
+	for rows.Next() {
+		var category models.Category
+
+		err := rows.Scan(
+			&category.ID,
+			&category.Label,
+		)
+		if err != nil {
+			return make([]models.Category, 0)
+		}
+
+		// Add the competition to the slice
+		categories = append(categories, category)
+	}
+
+	// Check for any errors encountered during iteration
+	if err := rows.Err(); err != nil {
+		return make([]models.Category, 0)
+	}
+
+	return categories
+}
+
 func (repo *CategoryRepository) GetCategoriesByCompetitionId(competitionId string) []models.Category {
 	query := `
         SELECT distinct cat.id, cat.label

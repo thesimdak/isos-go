@@ -1,7 +1,7 @@
 package models
 
 type TopParticipationResults struct {
-	Rank            int16
+	Rank            int
 	Name            string
 	YearOfBirth     string
 	Organization    string

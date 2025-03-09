@@ -10,7 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/thesimdak/goisos/internal/handlers/upload"
-	models "github.com/thesimdak/goisos/internal/models"
 	"github.com/thesimdak/goisos/internal/repository"
 	"github.com/thesimdak/goisos/internal/repository/category"
 	"github.com/thesimdak/goisos/internal/repository/competition"
@@ -109,10 +108,7 @@ func Initialize(db *sql.DB) {
 	})
 
 	router.GET("/top-results", func(c *gin.Context) {
-		var categories []models.Category
-		categories = append(categories, models.Category{ID: 122, Label: "Muzi"})
-		categories = append(categories, models.Category{ID: 123, Label: "Zeny"})
-		categories = append(categories, models.Category{ID: 124, Label: "Dorostenci"})
+		categories := categoryRepo.GetAllCategories()
 		renderPartial(c, "top-results.html", gin.H{
 			"Categories": categories,
 		})
@@ -140,11 +136,10 @@ func Initialize(db *sql.DB) {
 
 	router.GET("/top-result-table", func(c *gin.Context) {
 		//id := c.Param("id")
-		var topParticipationResults []models.TopParticipationResults
-		topParticipationResults = append(topParticipationResults, models.TopParticipationResults{Rank: 1, Name: "Jiri Novak", YearOfBirth: "1992", Organization: "Sokol Liben", CompetitionName: "Memorial Bedricha Supcika", Top: "5.56"})
-		topParticipationResults = append(topParticipationResults, models.TopParticipationResults{Rank: 2, Name: "Martin Simon", YearOfBirth: "1990", Organization: "Sokol Liben", CompetitionName: "Pisecky Splhavec", Top: "5.56"})
+		categoryId := c.Query("categoryId")
+		participationResults := resultService.GetTopResults(categoryId)
 		renderPartial(c, "top-result-table.html", gin.H{
-			"TopParticipationResults": topParticipationResults,
+			"TopParticipationResults": participationResults,
 		})
 	})
 

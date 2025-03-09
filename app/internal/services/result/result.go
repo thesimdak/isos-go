@@ -12,6 +12,12 @@ type ResultService struct {
 	ResultRepository *result.ResultRepository
 }
 
+func (svc *ResultService) GetTopResults(categoryId string) []models.TopParticipationResults {
+	topResults := svc.ResultRepository.FindTopResultsByCategoryId(categoryId)
+	setRankForTopResults(topResults)
+	return topResults
+}
+
 func (svc *ResultService) GetResults(competitionId string, categoryId string) []models.ParticipationResult {
 	participations := svc.ResultRepository.FindResultsBycompetitionIdAndCategoryId(competitionId, categoryId)
 	sortParticipationResults(participations)
@@ -31,12 +37,36 @@ func sortParticipationResults(results []models.ParticipationResult) {
 func setRankAndTopTime(results []models.ParticipationResult) {
 	for i := 0; i < len(results); i++ {
 		formattedNum := fmt.Sprintf("%.2f", results[i].GetTopTimes()[0])
-		results[i].Top = &formattedNum
+		if formattedNum == "999.00" {
+			*results[i].Top = "-"
+		} else {
+			results[i].Top = &formattedNum
+		}
+
 		compareAndSetRank(results, i)
 		replaceInvalidClimbeNumber(results[i].Time1)
 		replaceInvalidClimbeNumber(results[i].Time2)
 		replaceInvalidClimbeNumber(results[i].Time3)
 		replaceInvalidClimbeNumber(results[i].Time4)
+	}
+}
+
+func setRankForTopResults(results []models.TopParticipationResults) {
+	for i := 0; i < len(results); i++ {
+		if results[i].Top == "999.00" {
+			results[i].Top = "-"
+		}
+		if i == 0 {
+			results[i].Rank = i + 1
+			continue
+		}
+		previousTime := results[i-1].Top
+		time := results[i].Top
+		if time == previousTime {
+			results[i].Rank = results[i-1].Rank
+			return
+		}
+		results[i].Rank = i + 1
 	}
 }
 
@@ -62,7 +92,7 @@ func compareAndSetRank(results []models.ParticipationResult, i int) {
 }
 
 func replaceInvalidClimbeNumber(time *string) {
-	if time != nil && *time == "999" {
+	if time != nil && *time == "999.00" {
 		*time = "-"
 	}
 }
