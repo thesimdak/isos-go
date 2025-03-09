@@ -131,9 +131,10 @@ func Initialize(db *sql.DB) {
 		competitionId := c.Param("competitionId")
 		categoryId := c.Query("categoryId")
 		participationResults := resultService.GetResults(competitionId, categoryId)
+
 		renderPartial(c, "result-table.html", gin.H{
 			"ParticipationResults": participationResults,
-			"TimeCount":            4,
+			"TimeCount":            len(participationResults[0].GetTopTimes()),
 		})
 	})
 
