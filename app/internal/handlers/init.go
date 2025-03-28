@@ -2,8 +2,11 @@ package handlers
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 	"html/template"
+	"io/fs"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -21,7 +24,7 @@ import (
 	resultService "github.com/thesimdak/goisos/internal/services/result"
 )
 
-func Initialize(db *sql.DB) {
+func Initialize(db *sql.DB, staticFS embed.FS) {
 	// Attach the Logger and Recovery middleware manually
 	// Default to release mode
 	gin.SetMode(gin.ReleaseMode)
@@ -34,7 +37,7 @@ func Initialize(db *sql.DB) {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	// Load templates
-	router.SetHTMLTemplate(parseTemplates())
+	router.SetHTMLTemplate(parseTemplates(staticFS))
 	router.SetTrustedProxies(nil)
 
 	// Step 2: Initialize the repository
@@ -52,7 +55,22 @@ func Initialize(db *sql.DB) {
 
 	// Step 4: Initialize the handler
 	uploadHandler := upload.NewUploadHandler(competitionService)
-	router.Static("/static", "./static")
+
+	// Create a sub-filesystem from the embedded files
+	files, err := fs.ReadDir(staticFS, ".")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, file := range files {
+		log.Println(file.Name())
+	}
+	fsys, err := fs.Sub(staticFS, "static")
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Serve the static files
+	router.StaticFS("/static", http.FS(fsys))
+
 	router.GET("/logout", func(c *gin.Context) {
 		c.Header("WWW-Authenticate", `Basic realm="Restricted"`)
 		c.String(http.StatusUnauthorized, "Logging out...")
@@ -82,6 +100,10 @@ func Initialize(db *sql.DB) {
 		renderPartial(c, "competition-list.html", gin.H{
 			"Seasons": seasons,
 		})
+	})
+
+	router.GET("/contact", func(c *gin.Context) {
+		renderPartial(c, "contact.html", gin.H{})
 	})
 
 	router.GET("/results/:competitionId", func(c *gin.Context) {
@@ -163,7 +185,9 @@ func Initialize(db *sql.DB) {
 }
 
 func renderPage(c *gin.Context, templateName string, h gin.H) {
+	resultView := c.Query("resultView")
 	h["contentTemplate"] = templateName
+	h["ResultView"] = resultView
 	c.HTML(http.StatusOK, "layout.html", h)
 }
 
@@ -176,15 +200,14 @@ func renderPartial(c *gin.Context, templateName string, h gin.H) {
 }
 
 // Parse templates from the main directory and components subdirectory
-func parseTemplates() *template.Template {
+func parseTemplates(staticFiles embed.FS) *template.Template {
 	tmpl := template.New("") // Create a new template instance
 
-	// Parse templates from the main directory
-	tmpl = template.Must(tmpl.ParseGlob("templates/*.html"))
+	// Parse main templates
+	tmpl = template.Must(template.ParseFS(staticFiles, "templates/*.html"))
 
 	// Parse templates from the components subdirectory
-	tmpl = template.Must(tmpl.ParseGlob("templates/components/*.html"))
-
+	tmpl = template.Must(tmpl.ParseFS(staticFiles, "templates/components/*.html"))
 	return tmpl
 }
 

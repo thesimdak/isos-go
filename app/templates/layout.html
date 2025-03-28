@@ -9,7 +9,7 @@
 
     <title>svetsplhu.cz - Výsledky</title>
     <script src="/static/js/alpine.js" defer></script>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="/static/js/tailwind.js"></script>
     <!-- <link href="/static/output.css" rel="stylesheet"> -->
     <script src="/static/js/htmx.js" defer></script>
     <style>
@@ -51,9 +51,11 @@
 </head>
 
 <body>
+    {{ if ne .ResultView "true" }}
     <header>
         {{ template "menu.html" . }}
     </header>
+    {{ end }}
     <main id="main-content" class="container mx-auto w-[90%] sm:w-3/4 lg:w-2/3 py-5">
         <!-- This dynamically includes the partial template specified by "contentTemplate" -->
         {{ if eq .contentTemplate "competition-list.html" }}
@@ -67,6 +69,9 @@
         {{ end }}
         {{ if eq .contentTemplate "results.html" }}
         {{ template "results.html" . }}
+        {{ end }}
+        {{ if eq .contentTemplate "contact.html" }}
+        {{ template "contact.html" . }}
         {{ end }}
     </main>
 

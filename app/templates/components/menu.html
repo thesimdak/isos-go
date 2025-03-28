@@ -4,35 +4,24 @@
     <div class="flex justify-between items-center">
       <!-- Logo -->
       <div class="flex items-center font-bold">
-        <img src="https://www.svetsplhu.cz/wp-content/uploads/2015/12/logo_06_mini_62x70.png" class="logo">
+        <img src="static/logo.png" class="logo">
         <span class="ml-3">svetsplhu.cz</span>
       </div>
 
       <!-- Desktop Menu -->
       <ul class="hidden lg:flex space-x-6" x-data="{ currentPath: window.location.pathname }"
         @htmx:pushed-into-history.window="currentPath = window.location.pathname">
-        <li><a href="/competition-list" 
-          hx-get="/competition-list" 
-          hx-target="#main-content" 
-          hx-swap="innerHTML"
-          hx-push-url="true"
-          class="hover:text-blue-600"
-          :class="{ 'font-bold': currentPath === '/competition-list' }">VÝSLEDKY</a></li>
-        <li><a href="/top-results" 
-          hx-get="/top-results" 
-          hx-target="#main-content" 
-          hx-swap="innerHTML"
-          hx-push-url="true"
-          class="hover:text-blue-600"
-          :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a></li>
-           <!-- TODO Add statistiky, nominace, kontakt-->
-        <li><a href="/management"
-          hx-get="/management"
-          hx-target="#main-content"
-          hx-swap="innerHTML"
-          hx-push-url="true"
-          class="hover:text-blue-600"
-          :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
+        <li><a href="/competition-list" hx-get="/competition-list" hx-target="#main-content" hx-swap="innerHTML"
+            hx-push-url="true" class="hover:text-blue-600"
+            :class="{ 'font-bold': currentPath === '/competition-list' }">VÝSLEDKY</a></li>
+        <li><a href="/top-results" hx-get="/top-results" hx-target="#main-content" hx-swap="innerHTML"
+            hx-push-url="true" class="hover:text-blue-600"
+            :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a></li>
+        <!-- TODO Add statistiky, nominace, kontakt-->
+        <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+            class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
+        <li><a href="/contact" hx-get="/contact" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+            class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/contact' }">KONTAKT</a></li>
       </ul>
 
       <!-- Hamburger Menu -->
@@ -45,31 +34,19 @@
 
     </div>
     <!-- Mobile Menu -->
-    <ul class="lg:hidden bg-white flex flex-col space-y-3 pt-5 w-full" x-show="open" x-transition
-      @click="open = false"
+    <ul class="lg:hidden bg-white flex flex-col space-y-3 pt-5 w-full" x-show="open" x-transition @click="open = false"
       x-data="{ currentPath: window.location.pathname }"
-        @htmx:pushed-into-history.window="currentPath = window.location.pathname">
-      <li><a href="/competition-list" 
-        hx-get="/competition-list" 
-        hx-target="#main-content"
-        hx-swap="innerHTML"
-        hx-push-url="true"
-        class="hover:text-blue-600"
+      @htmx:pushed-into-history.window="currentPath = window.location.pathname">
+      <li><a href="/competition-list" hx-get="/competition-list" hx-target="#main-content" hx-swap="innerHTML"
+          hx-push-url="true" class="hover:text-blue-600"
           :class="{ 'font-bold': currentPath === '/competition-list'}">VÝSLEDKY</a></li>
-      <li><a href="/top-results"
-         hx-get="/top-results" 
-         hx-target="#main-content" 
-         hx-swap="innerHTML"
-          hx-push-url="true"
-          class="hover:text-blue-600"
-          :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a></li>
-      <li><a href="/management"
-         hx-get="/management" 
-         hx-target="#main-content" 
-         hx-swap="innerHTML"
-          hx-push-url="true"
-          class="hover:text-blue-600"
-          :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
+      <li><a href="/top-results" hx-get="/top-results" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+          class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a>
+      </li>
+      <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+          class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
+      <li><a href="/contact" hx-get="/contact" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+          class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/contact' }">KONTAKT</a></li>
     </ul>
 
 
