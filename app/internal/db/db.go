@@ -3,13 +3,15 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql" // Replace with your database driver
 )
 
 // InitializeDB initializes and returns a database connection.
 func InitializeDB() *sql.DB {
-	dsn := "admin:palestra@tcp(localhost:3306)/svetsplhu?charset=utf8mb4&collation=utf8mb4_unicode_ci" // Update with your DB details
+	dbConnection := os.Getenv("DB_CONNECTION")
+	dsn := dbConnection // Update with your DB details
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
