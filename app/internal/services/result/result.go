@@ -38,7 +38,8 @@ func setRankAndTopTime(results []models.ParticipationResult) {
 	for i := 0; i < len(results); i++ {
 		formattedNum := fmt.Sprintf("%.2f", results[i].GetTopTimes()[0])
 		if formattedNum == "999.00" {
-			*results[i].Top = "-"
+			dash := "-"
+			results[i].Top = &dash
 		} else {
 			results[i].Top = &formattedNum
 		}
