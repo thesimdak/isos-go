@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=martin@simononline.eu"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    labels:
+      - "traefik.http.routers.traefik.rule=Host(`traefik.svetsplhu.cz`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: palestra
+      MYSQL_DATABASE: svetsplhu
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: palestra
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: admin
+      PMA_PASSWORD: palestra
+    labels:
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.svetsplhu.cz`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+    depends_on:
+      - db
+
+  isos-app:
+    image: ubuntu:latest
+    container_name: isos-app
+    volumes:
+      - .:/app  # Mount the current directory to /app in the container
+    working_dir: /app
+    command: ["/app/isos"]
+    restart: always
+    env_file:
+      - .env
+    labels:
+      - "traefik.http.routers.isos-app.rule=Host(`isos.svetsplhu.cz`)"
+      - "traefik.http.routers.isos-app.entrypoints=websecure"
+      - "traefik.http.routers.isos-app.tls.certresolver=myresolver"
+      - "traefik.http.services.isos-app.loadbalancer.server.port=8080"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+  letsencrypt:

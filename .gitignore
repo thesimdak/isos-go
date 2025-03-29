@@ -1,1 +1,6 @@
 backend/__debug_bin3817737515
+.env
+.vscode
+node_modules
+package.json
+package-lock.json
