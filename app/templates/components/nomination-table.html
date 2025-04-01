@@ -1,0 +1,30 @@
+{{ define "nomination-table.html" }}
+<div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
+    {{ .Name }}
+</div>
+<table class="w-full text-[10px] md:text-sm">
+    <thead class="border-b border-gray-300 bg-gray-200 text-gray-600 font-bold text-left">
+        <tr>
+            <th class="px-1 py-1">#</th>
+            <th class="px-1 py-1">Jméno</th>
+            <th class="px-1 py-1">Ročník</th>
+            <th class="px-1 py-1">Oddíl</th>
+            <th class="px-1 py-1">Nominační čas</th>
+            <th class="px-1 py-1">Počet účastí na VC</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range .Nomination }}
+        <tr class="border-b border-gray-300 even:bg-gray-200 text-gray-600">
+            <td class="px-1 py-1">{{ .Rank }}</td>
+            <td class="px-1 py-1">{{ .Name }}</td>
+            <td class="px-1 py-1">{{ .YearOfBirth }}</td>
+            <td class="px-1 py-1">{{ .Organization }}</td>
+            <td class="px-1 py-1">{{ .BestTime }}</td>
+            <td class="px-1 py-1">{{ .ParticipationCount }}</td>
+        </tr>
+        {{ end }}
+    </tbody>
+    
+</table>
+{{ end }}

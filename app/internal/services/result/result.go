@@ -12,9 +12,23 @@ type ResultService struct {
 	ResultRepository *result.ResultRepository
 }
 
+func (svc *ResultService) GetNominations(categoryId string, requiredParticipationCount string, timeLimit string) []models.Nomination {
+	nominations := svc.ResultRepository.FindNominationsByCategoryId(categoryId, "2025")
+	var rankedResults []models.RankedResult
+	for i := range nominations {
+		rankedResults = append(rankedResults, &nominations[i])
+	}
+	setRankForTopResults(rankedResults)
+	return nominations
+}
+
 func (svc *ResultService) GetTopResults(categoryId string) []models.TopParticipationResults {
 	topResults := svc.ResultRepository.FindTopResultsByCategoryId(categoryId)
-	setRankForTopResults(topResults)
+	var rankedResults []models.RankedResult
+	for i := range topResults {
+		rankedResults = append(rankedResults, &topResults[i])
+	}
+	setRankForTopResults(rankedResults)
 	return topResults
 }
 
@@ -52,22 +66,22 @@ func setRankAndTopTime(results []models.ParticipationResult) {
 	}
 }
 
-func setRankForTopResults(results []models.TopParticipationResults) {
+func setRankForTopResults(results []models.RankedResult) {
 	for i := 0; i < len(results); i++ {
-		if results[i].Top == "999.00" {
-			results[i].Top = "-"
+		if results[i].GetTop() == "999.00" {
+			results[i].SetTop("-")
 		}
 		if i == 0 {
-			results[i].Rank = i + 1
+			results[i].SetRank(i + 1)
 			continue
 		}
-		previousTime := results[i-1].Top
-		time := results[i].Top
+		previousTime := results[i-1].GetTop()
+		time := results[i].GetTop()
 		if time == previousTime {
-			results[i].Rank = results[i-1].Rank
+			results[i].SetRank(results[i-1].GetRank())
 			return
 		}
-		results[i].Rank = i + 1
+		results[i].SetRank(i + 1)
 	}
 }
 

@@ -138,3 +138,22 @@ func (repo *CategoryRepository) FindCategory(categoryKey string) *models.Categor
 	}
 	return &category
 }
+
+func (repo *CategoryRepository) FindCategoryById(categoryId string) *models.Category {
+	query := `SELECT id, category_key, label, rope_length  FROM category WHERE category.id = ?`
+
+	row := repo.DB.QueryRow(query, categoryId)
+
+	var category models.Category
+
+	err := row.Scan(
+		&category.ID,
+		&category.CategoryKey,
+		&category.Label,
+		&category.RopeLength,
+	)
+	if err != nil {
+		return nil
+	}
+	return &category
+}

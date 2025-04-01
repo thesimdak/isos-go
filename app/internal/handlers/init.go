@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thesimdak/goisos/internal/handlers/upload"
@@ -92,6 +94,26 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 		seasons := competitionService.GetSeasons()
 		renderPartial(c, "management.html", gin.H{
 			"Seasons": seasons,
+		})
+	})
+
+	router.GET("/nomination", func(c *gin.Context) {
+		categories := categoryRepo.GetAllCategories()
+		renderPartial(c, "nomination.html", gin.H{
+			"Categories": categories,
+			"Year":       time.Now().Year(),
+		})
+	})
+
+	router.GET("/nomination-table", func(c *gin.Context) {
+		//id := c.Param("id")
+		categoryId := c.Query("categoryId")
+		category := categoryRepo.FindCategory(categoryId)
+		requiredParticipationCount := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_TIME")
+		timeLimit := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_PARTICIPATION_COUNT")
+		nominations := resultService.GetNominations(categoryId, requiredParticipationCount, timeLimit)
+		renderPartial(c, "nomination-table.html", gin.H{
+			"Nominations": nominations,
 		})
 	})
 

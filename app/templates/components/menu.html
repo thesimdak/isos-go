@@ -4,12 +4,12 @@
     <div class="flex justify-between items-center">
       <!-- Logo -->
       <div class="flex items-center font-bold">
-        <img src="static/logo.png" class="logo">
+        <img src="/static/logo.png" class="logo">
         <span class="ml-3">svetsplhu.cz</span>
       </div>
 
       <!-- Desktop Menu -->
-      <ul class="hidden lg:flex space-x-6" x-data="{ currentPath: window.location.pathname }"
+      <ul class="hidden lg:flex space-x-4" x-data="{ currentPath: window.location.pathname }"
         @htmx:pushed-into-history.window="currentPath = window.location.pathname">
         <li><a href="/competition-list" hx-get="/competition-list" hx-target="#main-content" hx-swap="innerHTML"
             hx-push-url="true" class="hover:text-blue-600"
@@ -17,12 +17,13 @@
         <li><a href="/top-results" hx-get="/top-results" hx-target="#main-content" hx-swap="innerHTML"
             hx-push-url="true" class="hover:text-blue-600"
             :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a></li>
-        <!-- TODO Add statistiky, nominace, kontakt-->
-        <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
-            class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
+            <li><a href="/nomination" hx-get="/nomination" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+              class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/nomination' }">NOMINACE</a></li>
         <li><a href="/contact" hx-get="/contact" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
             class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/contact' }">KONTAKT</a></li>
-      </ul>
+            <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+              class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/management' }">&#128273</a></li>
+          </ul>
 
       <!-- Hamburger Menu -->
       <div class="lg:hidden text-3xl">
@@ -43,10 +44,12 @@
       <li><a href="/top-results" hx-get="/top-results" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
           class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/top-results' }">HISTORICKÝ ŽEBŘÍČEK</a>
       </li>
-      <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
-          class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/management' }">ADMINISTRACE</a></li>
+      <li><a href="/nomination" hx-get="/nomination" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+        class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/contact' }">NOMINACE</a></li>
       <li><a href="/contact" hx-get="/contact" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
           class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/contact' }">KONTAKT</a></li>
+          <li><a href="/management" hx-get="/management" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+            class="hover:text-blue-600" :class="{ 'font-bold': currentPath === '/management' }">&#128273</a></li>
     </ul>
 
 
