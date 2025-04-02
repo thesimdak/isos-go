@@ -3,6 +3,7 @@ package result
 import (
 	"fmt"
 	"sort"
+	"strconv"
 
 	"github.com/thesimdak/goisos/internal/models"
 	"github.com/thesimdak/goisos/internal/repository/result"
@@ -12,11 +13,16 @@ type ResultService struct {
 	ResultRepository *result.ResultRepository
 }
 
-func (svc *ResultService) GetNominations(categoryId string, requiredParticipationCount string, timeLimit string) []models.Nomination {
-	nominations := svc.ResultRepository.FindNominationsByCategoryId(categoryId, "2025")
+func (svc *ResultService) GetNominations(categoryId string, year string, requiredParticipationCount int, timeLimit float64) []models.Nomination {
+	nominations := svc.ResultRepository.FindNominationsByCategoryId(categoryId, year)
 	var rankedResults []models.RankedResult
 	for i := range nominations {
 		rankedResults = append(rankedResults, &nominations[i])
+		participationCount, _ := strconv.Atoi(nominations[i].ParticipationCount)
+		bestTime, _ := strconv.ParseFloat(nominations[i].BestTime, 64)
+		if participationCount >= requiredParticipationCount && bestTime <= timeLimit {
+			nominations[i].Qualified = true
+		}
 	}
 	setRankForTopResults(rankedResults)
 	return nominations
@@ -79,7 +85,7 @@ func setRankForTopResults(results []models.RankedResult) {
 		time := results[i].GetTop()
 		if time == previousTime {
 			results[i].SetRank(results[i-1].GetRank())
-			return
+			continue
 		}
 		results[i].SetRank(i + 1)
 	}

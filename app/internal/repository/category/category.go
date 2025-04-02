@@ -120,10 +120,10 @@ func (repo *CategoryRepository) InsertCategory(categoryKey string, label string,
 	return &models.Category{ID: id, CategoryKey: categoryKey, Label: label, RopeLength: ropeLength}
 }
 
-func (repo *CategoryRepository) FindCategory(categoryKey string) *models.Category {
-	query := `SELECT id, category_key, label, rope_length  FROM category WHERE category.category_key = ?`
+func (repo *CategoryRepository) FindCategory(categoryId string) *models.Category {
+	query := `SELECT id, category_key, label, rope_length  FROM category WHERE id = ?`
 
-	row := repo.DB.QueryRow(query, categoryKey)
+	row := repo.DB.QueryRow(query, categoryId)
 
 	var category models.Category
 

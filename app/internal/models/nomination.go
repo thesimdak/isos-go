@@ -1,6 +1,7 @@
 package models
 
 type Nomination struct {
+	Id                 int
 	Rank               int
 	Name               string
 	YearOfBirth        string

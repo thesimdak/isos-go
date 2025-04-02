@@ -11,67 +11,70 @@ type ResultRepository struct {
 
 func (repo *ResultRepository) FindNominationsByCategoryId(categoryId string, year string) []models.Nomination {
 	query := `WITH MinTimes AS (
-    SELECT
-        p.id AS participation_id,
-        MIN(t.time) AS min_time
-    FROM
-        participation p
-        JOIN time t ON t.participation_id = p.id
-        JOIN competition c ON c.id = p.competition_id
-    WHERE p.category_id = 3 AND YEAR(c.date) = 2025
-    GROUP BY
-        p.id
-),
-RankedParticipants AS (
-    SELECT
-        rc.id as id,
-        CONCAT(rc.last_name, ', ', rc.first_name) AS name,
-        rc.year_of_birth,
-        p.organization,
-        c.name AS c_name,
-        mt.min_time AS top,
-        ROW_NUMBER() OVER (
-            PARTITION BY rc.last_name, rc.first_name, rc.year_of_birth
-            ORDER BY mt.min_time, c.date
-        ) AS rn
-    FROM
-        participation p
-        JOIN rope_climber rc ON rc.id = p.rope_climber_id
-        JOIN MinTimes mt ON mt.participation_id = p.id
-        JOIN competition c ON c.id = p.competition_id
-    GROUP BY
-        rc.id, rc.last_name, rc.first_name, rc.year_of_birth, p.organization, mt.min_time, c.date, c.name
-),
-ParticipationCount AS (
-    SELECT
-        rc.id as rc_id, COUNT(*) as count
-    FROM
-        participation p
-        JOIN rope_climber rc ON rc.id = p.rope_climber_id
-        JOIN competition c ON c.id = p.competition_id AND YEAR(c.date) = 2025
-    GROUP BY
-        rc.id
-)
-SELECT
-    rp.name,
-    rp.year_of_birth,
-    rp.organization,
-    rp.c_name,
-    pc.count,
-    FORMAT(rp.top, 2) AS formatted_top
-FROM
-    RankedParticipants rp
-    JOIN ParticipationCount pc ON pc.rc_id = rp.id
-WHERE
-    rp.rn = 1
-ORDER BY
-    rp.top;
+				SELECT
+					p.id AS participation_id,
+					p.organization,
+					p.rope_climber_id,
+					MIN(t.time) AS min_time
+				FROM
+					participation p
+					JOIN time t ON t.participation_id = p.id
+					JOIN competition c ON c.id = p.competition_id
+				WHERE p.category_id = ? AND YEAR(c.date) = ?
+				GROUP BY
+					p.id
+			),
+			RankedParticipants AS (
+				SELECT
+					rc.id as id,
+					CONCAT(rc.last_name, ', ', rc.first_name) AS name,
+					rc.year_of_birth,
+					c.name AS c_name,
+					mt.min_time AS top,
+					ROW_NUMBER() OVER (
+						PARTITION BY rc.last_name, rc.first_name, rc.year_of_birth
+						ORDER BY mt.min_time, c.date
+					) AS rn
+				FROM
+					participation p
+					JOIN rope_climber rc ON rc.id = p.rope_climber_id
+					JOIN MinTimes mt ON mt.participation_id = p.id
+					JOIN competition c ON c.id = p.competition_id
+				GROUP BY
+					rc.id, rc.last_name, rc.first_name, rc.year_of_birth, mt.min_time, c.date, c.name
+			),
+			ParticipationCount AS (
+				SELECT
+					rc.id as rc_id, COUNT(*) as count
+				FROM
+					participation p
+					JOIN rope_climber rc ON rc.id = p.rope_climber_id
+					JOIN competition c ON c.id = p.competition_id AND YEAR(c.date) = ?
+				GROUP BY
+					rc.id
+			)
+			SELECT
+				rp.id,
+				rp.name,
+				rp.year_of_birth,
+				m.organization,
+				rp.c_name,
+				pc.count,
+				FORMAT(rp.top, 2) AS formatted_top
+			FROM
+				RankedParticipants rp
+				JOIN ParticipationCount pc ON pc.rc_id = rp.id
+				JOIN MinTimes m ON m.rope_climber_id = rp.id AND m.min_time = rp.top
+			WHERE
+				rp.rn = 1
+			ORDER BY
+				rp.top
 
 			`
 
-	rows, err := repo.DB.Query(query, categoryId)
+	rows, err := repo.DB.Query(query, categoryId, year, year)
 	if err != nil {
-		return make([]models.Nomination, 0) // Return an error if the query fails
+		return make([]models.Nomination, 0)
 	}
 	defer rows.Close() // Ensure the rows are closed after we are done
 
@@ -81,6 +84,7 @@ ORDER BY
 	for rows.Next() {
 		var result models.Nomination
 		err := rows.Scan(
+			&result.Id,
 			&result.Name,
 			&result.YearOfBirth,
 			&result.Organization,
@@ -103,6 +107,8 @@ func (repo *ResultRepository) FindTopResultsByCategoryId(categoryId string) []mo
 	query := `WITH MinTimes AS (
     SELECT
         p.id AS participation_id,
+		p.organization AS organization,
+		p.rope_climber_id AS rope_climber_id,
         MIN(t.time) AS min_time
     FROM
         participation p
@@ -113,9 +119,9 @@ func (repo *ResultRepository) FindTopResultsByCategoryId(categoryId string) []mo
 	),
 	RankedParticipants AS (
 		SELECT
+		    rc.id as id,
 			CONCAT(rc.last_name, ', ', rc.first_name) AS name,
 			rc.year_of_birth,
-			p.organization,
 			c.name AS c_name,
 			mt.min_time AS top,
 			ROW_NUMBER() OVER (
@@ -128,20 +134,22 @@ func (repo *ResultRepository) FindTopResultsByCategoryId(categoryId string) []mo
 			JOIN MinTimes mt ON mt.participation_id = p.id
 			JOIN competition c ON c.id = p.competition_id
 		GROUP BY
-			rc.last_name, rc.first_name, rc.year_of_birth, p.organization, mt.min_time, c.date, c.name
+			rc.id, rc.last_name, rc.first_name, rc.year_of_birth, mt.min_time, c.date, c.name
 		)
 		SELECT
+			id,
 			name,
 			year_of_birth,
-			organization,
+			m.organization,
 			c_name,
 			FORMAT(top, 2)
 		FROM
-			RankedParticipants
+			RankedParticipants rp
+				JOIN MinTimes m ON m.rope_climber_id = rp.id AND m.min_time = rp.top
 		WHERE
 			rn = 1
 		ORDER BY
-			top
+			rp.top
 		`
 
 	rows, err := repo.DB.Query(query, categoryId)
@@ -156,6 +164,7 @@ func (repo *ResultRepository) FindTopResultsByCategoryId(categoryId string) []mo
 	for rows.Next() {
 		var result models.TopParticipationResults
 		err := rows.Scan(
+			&result.Id,
 			&result.Name,
 			&result.YearOfBirth,
 			&result.Organization,

@@ -8,6 +8,7 @@ type RankedResult interface {
 }
 
 type TopParticipationResults struct {
+	Id              int
 	Rank            int
 	Name            string
 	YearOfBirth     string

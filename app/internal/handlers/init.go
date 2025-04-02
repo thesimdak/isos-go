@@ -109,9 +109,12 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 		//id := c.Param("id")
 		categoryId := c.Query("categoryId")
 		category := categoryRepo.FindCategory(categoryId)
-		requiredParticipationCount := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_TIME")
-		timeLimit := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_PARTICIPATION_COUNT")
-		nominations := resultService.GetNominations(categoryId, requiredParticipationCount, timeLimit)
+		timeLimit := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_TIME")
+		requiredParticipationCount := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_PARTICIPATION_COUNT")
+		requiredParticipationCountInt, _ := strconv.Atoi(requiredParticipationCount)
+		timeFloat, _ := strconv.ParseFloat(timeLimit, 64)
+		year := "2024" // TODO: select year of last competition
+		nominations := resultService.GetNominations(categoryId, year, requiredParticipationCountInt, timeFloat)
 		renderPartial(c, "nomination-table.html", gin.H{
 			"Nominations": nominations,
 		})
