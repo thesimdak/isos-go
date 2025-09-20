@@ -75,6 +75,9 @@
         {{ if eq .contentTemplate "results.html" }}
         {{ template "results.html" . }}
         {{ end }}
+        {{ if eq .contentTemplate "nomination.html" }}
+        {{ template "nomination.html" . }}
+        {{ end }}
         {{ if eq .contentTemplate "contact.html" }}
         {{ template "contact.html" . }}
         {{ end }}
