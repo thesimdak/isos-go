@@ -7,6 +7,8 @@ services:
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false" # <--- Recommended security
+      - "--providers.docker.network=web"            # <--- ADDED: Specify network for Traefik to watch
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
@@ -18,11 +20,14 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./letsencrypt:/letsencrypt"
-    labels:
-      - "traefik.http.routers.traefik.rule=Host(`traefik.svetsplhu.cz`)"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
+    networks: # <--- ADDED
+      - web
+ #   labels: # <--- UNCOMMENTED (Assumed you want the dashboard)
+ #     - "traefik.enable=true"
+ #     - "traefik.http.routers.traefik.rule=Host(`traefik.svetsplhu.cz`)"
+ #     - "traefik.http.routers.traefik.service=api@internal"
+ #     - "traefik.http.routers.traefik.entrypoints=websecure"
+ #     - "traefik.http.routers.traefik.tls.certresolver=myresolver"
 
   db:
     image: mysql:8.0
@@ -36,7 +41,9 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: palestra
     volumes:
-      - db_data:/var/lib/mysql
+      - db_isos_go_data:/var/lib/mysql
+    networks: # <--- ADDED: Put DB on a private network
+      - internal
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -46,32 +53,46 @@ services:
       PMA_HOST: db
       PMA_USER: admin
       PMA_PASSWORD: palestra
-    labels:
-      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.svetsplhu.cz`)"
-      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
-      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
-      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+    networks: # <--- ADDED: Must be on 'web' for Traefik, 'internal' to reach DB
+      - web
+      - internal
+#    labels: # <--- UNCOMMENTED (Assumed you want to expose it)
+#      - "traefik.enable=true" # <--- ADDED
+#      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.svetsplhu.cz`)"
+#      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
+#      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+#      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
     depends_on:
       - db
 
   isos-app:
-    image: ubuntu:latest
+    image: ubuntu:latest # Consider a smaller/more secure image
     container_name: isos-app
     volumes:
-      - .:/app  # Mount the current directory to /app in the container
+      - .:/app
     working_dir: /app
-    command: ["/app/isos"]
+    command: ["/app/goisos"]
     restart: always
     env_file:
       - .env
-    labels:
-      - "traefik.http.routers.isos-app.rule=Host(`isos.svetsplhu.cz`)"
-      - "traefik.http.routers.isos-app.entrypoints=websecure"
-      - "traefik.http.routers.isos-app.tls.certresolver=myresolver"
-      - "traefik.http.services.isos-app.loadbalancer.server.port=8080"
+    networks: # <--- ADDED: Must be on 'web' for Traefik, 'internal' to reach DB
+      - web
+      - internal
+#    labels:
+#      - "traefik.enable=true" # <--- ADDED
+#      - "traefik.http.routers.isos-app.rule=Host(`isos.svetsplhu.cz`)"
+#      - "traefik.http.routers.isos-app.entrypoints=websecure"
+#      - "traefik.http.routers.isos-app.tls.certresolver=myresolver"
+#      - "traefik.http.services.isos-app.loadbalancer.server.port=8080"
     depends_on:
       - db
 
 volumes:
-  db_data:
+  db_isos_go_data:
   letsencrypt:
+
+networks: # <--- ADDED: Define the networks
+  web:
+    driver: bridge
+  internal:
+    driver: bridge

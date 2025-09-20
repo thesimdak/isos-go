@@ -10,21 +10,22 @@
             <th class="px-1 py-1">Ročník</th>
             <th class="px-1 py-1">Oddíl</th>
             <th class="px-1 py-1">Nominační čas</th>
+            <th class="px-1 py-1">Závod</th>
             <th class="px-1 py-1">Počet účastí na VC</th>
         </tr>
     </thead>
     <tbody>
         {{ range .Nominations }}
-        <tr class="border-b border-gray-300 even:bg-gray-200 text-gray-600">
+        <tr class="border-b border-gray-300  {{ if not .Qualified }}bg-red-100 even:bg-red-200{{ end }} text-gray-600  {{ if .Qualified }}bg-green-100  even:bg-green-200 {{ end }}">
             <td class="px-1 py-1">{{ .Rank }}</td>
             <td class="px-1 py-1">{{ .Name }}</td>
             <td class="px-1 py-1">{{ .YearOfBirth }}</td>
             <td class="px-1 py-1">{{ .Organization }}</td>
             <td class="px-1 py-1">{{ .BestTime }}</td>
+            <td class="px-1 py-1">{{ .CompetitionName }}</td>
             <td class="px-1 py-1">{{ .ParticipationCount }}</td>
         </tr>
         {{ end }}
     </tbody>
-    
 </table>
 {{ end }}

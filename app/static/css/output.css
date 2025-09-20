@@ -1222,13 +1222,6 @@
       margin-inline-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse)));
     }
   }
-  .space-x-6 {
-    :where(& > :not(:last-child)) {
-      --tw-space-x-reverse: 0;
-      margin-inline-start: calc(calc(var(--spacing) * 6) * var(--tw-space-x-reverse));
-      margin-inline-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-x-reverse)));
-    }
-  }
   .space-x-reverse {
     :where(& > :not(:last-child)) {
       --tw-space-x-reverse: 1;
@@ -1453,6 +1446,12 @@
   }
   .bg-gray-600 {
     background-color: var(--color-gray-600);
+  }
+  .bg-green-100 {
+    background-color: var(--color-green-100);
+  }
+  .bg-red-100 {
+    background-color: var(--color-red-100);
   }
   .bg-red-600 {
     background-color: var(--color-red-600);
@@ -2239,6 +2238,16 @@
   .even\:bg-gray-200 {
     &:nth-child(even) {
       background-color: var(--color-gray-200);
+    }
+  }
+  .even\:bg-green-200 {
+    &:nth-child(even) {
+      background-color: var(--color-green-200);
+    }
+  }
+  .even\:bg-red-200 {
+    &:nth-child(even) {
+      background-color: var(--color-red-200);
     }
   }
   .hover\:bg-gray-100 {

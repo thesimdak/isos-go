@@ -11,7 +11,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thesimdak/goisos/internal/handlers/upload"
@@ -99,9 +98,10 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 
 	router.GET("/nomination", func(c *gin.Context) {
 		categories := categoryRepo.GetAllCategories()
+		year := competitionService.GetSeasons()[0]
 		renderPartial(c, "nomination.html", gin.H{
 			"Categories": categories,
-			"Year":       time.Now().Year(),
+			"Year":       year,
 		})
 	})
 
@@ -113,8 +113,8 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 		requiredParticipationCount := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_PARTICIPATION_COUNT")
 		requiredParticipationCountInt, _ := strconv.Atoi(requiredParticipationCount)
 		timeFloat, _ := strconv.ParseFloat(timeLimit, 64)
-		year := "2024" // TODO: select year of last competition
-		nominations := resultService.GetNominations(categoryId, year, requiredParticipationCountInt, timeFloat)
+		year := competitionService.GetSeasons()[0]
+		nominations := resultService.GetNominations(categoryId, strconv.Itoa(int(year)), requiredParticipationCountInt, timeFloat)
 		renderPartial(c, "nomination-table.html", gin.H{
 			"Nominations": nominations,
 		})
@@ -132,7 +132,6 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 	})
 
 	router.GET("/results/:competitionId", func(c *gin.Context) {
-		//id := c.Param("id")
 		competitionId := c.Param("competitionId")
 		categories := categoryRepo.GetCategoriesByCompetitionId(competitionId)
 		competition := competitionRepo.FindById(competitionId)

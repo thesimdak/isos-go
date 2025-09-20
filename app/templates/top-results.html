@@ -35,7 +35,7 @@
       </div>
 
       <!-- Hidden Input for HTMX -->
-      <input type="hidden" id="categoryId" name="categoryId" x-ref="hiddenInput" hx-get="/top-result-table"
+      <input type="hidden" id="categoryId" name="categoryId" x-ref="hiddenInput" hx-indicator="#spinner" hx-get="/top-result-table"
         hx-trigger="change" hx-target="#top-result-table">
     </div>
 

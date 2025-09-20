@@ -3,6 +3,7 @@
 {{ range .Competitions }}
 <div class="p-4 rounded-lg shadow w-full flex justify-center items-center cursor-pointer text-gray-600"
      hx-get="/results/{{.ID}}"
+     hx-indicator="#spinner"
      hx-target="#main-content"
      hx-swap="innerHTML"
      hx-push-url="true"

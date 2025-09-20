@@ -26,6 +26,7 @@
     <div class="text-lg px-2 py-2">
       <a href="/logout"
          hx-get="/logout"
+         hx-indicator="#spinner"
          hx-trigger="click"
          hx-on::after-request="window.location.href='/'"
          class="bg-white border border-gray-600 text-gray-600 rounded px-4 py-2 hover:bg-gray-100">
@@ -56,7 +57,7 @@
       </div>
 
       <!-- Hidden Input for HTMX -->
-      <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-get="/competitions?showDelete=true"
+      <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-indicator="#spinner" hx-get="/competitions?showDelete=true"
         hx-trigger="change" hx-target="#competition-list">
     </div>
 

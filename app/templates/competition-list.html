@@ -25,7 +25,7 @@
     </div>
 
     <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-get="/competitions"
+    <input type="hidden" id="season" name="season" x-ref="hiddenInput" hx-indicator="#spinner" hx-get="/competitions"
       hx-trigger="change" hx-target="#competition-list">
   </div>
 
