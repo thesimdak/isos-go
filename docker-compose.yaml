@@ -1,7 +1,4 @@
 
-## We're using version 3.7X of the Docker Compose file format
-version: "3.7"
-
 # Define services/containers
 services:
   mysql:

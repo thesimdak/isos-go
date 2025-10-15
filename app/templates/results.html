@@ -10,9 +10,11 @@
   $refs.hiddenInput.value = selectedID;
   $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
 }">
+  {{ if ne .ResultView "true" }}
   <div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
     {{ .Name }}
   </div>
+  {{ end }}
   <div class="relative w-64">
     <!-- Selected Value (Trigger for Dropdown) -->
     <button @click="open = !open"
@@ -27,7 +29,7 @@
       <div @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; 
         $refs.hiddenInput.value = selectedID; 
         $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
-        history.replaceState(null, '', `?categoryId=${selectedID}`);"
+        history.replaceState(null, '', `?category=${selectedID}`);"
         class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
         {{ .Label }}
       </div>
@@ -35,7 +37,7 @@
     </div>
 
     <!-- Hidden Input for HTMX -->
-    <input type="hidden" id="categoryId" name="categoryId" x-ref="hiddenInput" hx-indicator="#spinner"
+    <input type="hidden" id="category" name="category" x-ref="hiddenInput" hx-indicator="#spinner"
       :hx-get="`/result-table/{{ .CompetitionID }}`" hx-trigger="change" hx-target="#result-list">
   </div>
 </div>

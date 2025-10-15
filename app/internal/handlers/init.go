@@ -107,7 +107,7 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 
 	router.GET("/nomination-table", func(c *gin.Context) {
 		//id := c.Param("id")
-		categoryId := c.Query("categoryId")
+		categoryId := c.Query("category")
 		category := categoryRepo.FindCategory(categoryId)
 		timeLimit := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_TIME")
 		requiredParticipationCount := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_PARTICIPATION_COUNT")
@@ -135,7 +135,7 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 		competitionId := c.Param("competitionId")
 		categories := categoryRepo.GetCategoriesByCompetitionId(competitionId)
 		competition := competitionRepo.FindById(competitionId)
-		categoryId := c.Query("categoryId")
+		categoryId := c.Query("category")
 
 		var categoryLabel string
 		for _, category := range categories {
@@ -171,7 +171,7 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 	// season dropdown
 	router.GET("/result-table/:competitionId", func(c *gin.Context) {
 		competitionId := c.Param("competitionId")
-		categoryId := c.Query("categoryId")
+		categoryId := c.Query("category")
 		participationResults := resultService.GetResults(competitionId, categoryId)
 
 		renderPartial(c, "result-table.html", gin.H{
@@ -182,7 +182,7 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 
 	router.GET("/top-result-table", func(c *gin.Context) {
 		//id := c.Param("id")
-		categoryId := c.Query("categoryId")
+		categoryId := c.Query("category")
 		participationResults := resultService.GetTopResults(categoryId)
 		renderPartial(c, "top-result-table.html", gin.H{
 			"TopParticipationResults": participationResults,
