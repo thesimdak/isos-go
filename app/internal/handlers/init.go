@@ -108,7 +108,7 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 	router.GET("/nomination-table", func(c *gin.Context) {
 		//id := c.Param("id")
 		categoryId := c.Query("category")
-		category := categoryRepo.FindCategory(categoryId)
+		category := categoryRepo.FindCategoryById(categoryId)
 		timeLimit := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_TIME")
 		requiredParticipationCount := os.Getenv(strings.Split(category.CategoryKey, "_")[1] + "_NOMINATION_PARTICIPATION_COUNT")
 		requiredParticipationCountInt, _ := strconv.Atoi(requiredParticipationCount)

@@ -121,7 +121,7 @@ func (repo *CategoryRepository) InsertCategory(categoryKey string, label string,
 }
 
 func (repo *CategoryRepository) FindCategory(categoryId string) *models.Category {
-	query := `SELECT id, category_key, label, rope_length  FROM category WHERE id = ?`
+	query := `SELECT id, category_key, label, rope_length  FROM category WHERE category_key = ?`
 
 	row := repo.DB.QueryRow(query, categoryId)
 
