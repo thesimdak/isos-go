@@ -23,6 +23,7 @@ import (
 	timeRepo "github.com/thesimdak/goisos/internal/repository/time"
 	competitionService "github.com/thesimdak/goisos/internal/services/competition"
 	resultService "github.com/thesimdak/goisos/internal/services/result"
+	ropeClimberService "github.com/thesimdak/goisos/internal/services/ropeclimber"
 )
 
 func Initialize(db *sql.DB, staticFS embed.FS) {
@@ -52,6 +53,7 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 
 	// Step 3: Initialize the service
 	resultService := resultService.NewResultService(resultRepo)
+	ropeClimberService := ropeClimberService.NewRopeClimberService(ropeClimberRepo)
 	competitionService := competitionService.NewCompetitionService(competitionRepo, categoryRepo, ropeClimberRepo, timeRepo, participationRepo)
 
 	// Step 4: Initialize the handler
@@ -124,6 +126,14 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 		seasons := competitionService.GetSeasons()
 		renderPartial(c, "competition-list.html", gin.H{
 			"Seasons": seasons,
+		})
+	})
+
+	router.GET("/rope-climber-competitions/:ropeClimberId", func(c *gin.Context) {
+		ropeClimberId := c.Param("ropeClimberId")
+		ropeClimberCompetitions := ropeClimberService.GetRopeClimberResults(ropeClimberId)
+		renderPartial(c, "rope_climber_competitions.html", gin.H{
+			"RopeClimberCompetitions": ropeClimberCompetitions,
 		})
 	})
 

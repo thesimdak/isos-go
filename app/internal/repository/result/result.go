@@ -187,7 +187,7 @@ func NewResultRepository(repo *repository.Repository) *ResultRepository {
 }
 
 func (repo *ResultRepository) FindResultsBycompetitionIdAndCategoryId(competitionId string, categoryId string) []models.ParticipationResult {
-	query := `SELECT CONCAT(rc.last_name, ', ', rc.first_name) AS name, rc.year_of_birth, p.organization, FORMAT(t1.time, 2), FORMAT(t2.time, 2), FORMAT(t3.time, 2), FORMAT(t4.time, 2) FROM participation p 
+	query := `SELECT rc.id, CONCAT(rc.last_name, ', ', rc.first_name) AS name, rc.year_of_birth, p.organization, FORMAT(t1.time, 2), FORMAT(t2.time, 2), FORMAT(t3.time, 2), FORMAT(t4.time, 2) FROM participation p 
 	JOIN rope_climber rc ON rc.id = p.rope_climber_id
 	LEFT JOIN time t1 ON t1.participation_id = p.id and t1.round = 1
     LEFT JOIN time t2 ON t2.participation_id = p.id and t2.round = 2
@@ -206,6 +206,7 @@ func (repo *ResultRepository) FindResultsBycompetitionIdAndCategoryId(competitio
 	for rows.Next() {
 		var result models.ParticipationResult
 		err := rows.Scan(
+			&result.Id,
 			&result.Name,
 			&result.YearOfBirth,
 			&result.Organization,

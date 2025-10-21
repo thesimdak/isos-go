@@ -21,7 +21,9 @@
     </thead>
     <tbody>
         {{ range .ParticipationResults }}
-        <tr class="border-b border-gray-300 even:bg-gray-200 text-gray-600">
+        <tr  class="border-b border-gray-300 even:bg-gray-200 text-gray-600 cursor-pointer" hx-indicator="#spinner"
+            hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+            hx-get="/rope-climber-competitions/{{.Id}}">
             <td class="px-1 py-1">{{ .Rank }}</td>
             <td class="px-1 py-1">{{ .Name }}</td>
             <td class="px-1 py-1">{{ .YearOfBirth }}</td>
@@ -40,6 +42,6 @@
         </tr>
         {{ end }}
     </tbody>
-    
+
 </table>
 {{ end }}

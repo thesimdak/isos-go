@@ -16,7 +16,9 @@
     </thead>
     <tbody>
         {{ range .Nominations }}
-        <tr class="border-b border-gray-300  {{ if not .Qualified }}bg-red-100 even:bg-red-200{{ end }} text-gray-600  {{ if .Qualified }}bg-green-100  even:bg-green-200 {{ end }}">
+        <tr class="border-b border-gray-300 cursor-pointer  {{ if not .Qualified }}bg-red-100 even:bg-red-200{{ end }} text-gray-600  {{ if .Qualified }}bg-green-100  even:bg-green-200 {{ end }}"
+            hx-indicator="#spinner" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true"
+            hx-get="/rope-climber-competitions/{{.Id}}">
             <td class="px-1 py-1">{{ .Rank }}</td>
             <td class="px-1 py-1">{{ .Name }}</td>
             <td class="px-1 py-1">{{ .YearOfBirth }}</td>

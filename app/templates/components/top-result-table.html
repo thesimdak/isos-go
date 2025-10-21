@@ -11,6 +11,7 @@
             <th class="px-1 py-1">Oddíl</th>
             <th class="px-1 py-1">Závod</th>
             <th class="px-1 py-1">Top</th>
+            <th class="px-1 py-1 text-center">Detail</th>
         </tr>
     </thead>
     <tbody>
@@ -22,9 +23,14 @@
             <td class="px-1 py-1">{{ .Organization }}</td>
             <td class="px-1 py-1">{{ .CompetitionName }}</td>
             <td class="px-1 py-1">{{ .Top }}</td>
+           <td class="px-1 py-1 flex justify-center items-center cursor-pointer"
+                hx-indicator="#spinner" hx-target="#main-content" hx-swap="innerHTML"
+                hx-push-url="true" hx-get="/rope-climber-competitions/{{.Id}}">
+                &#128279;
+            </td>
         </tr>
         {{ end }}
     </tbody>
-    
+
 </table>
 {{ end }}

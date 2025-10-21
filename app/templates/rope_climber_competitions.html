@@ -1,0 +1,64 @@
+{{ define "rope_climber_competitions.html" }}
+<div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2 flex justify-between">
+  <span>
+  {{ (index .RopeClimberCompetitions 0).Name }} ({{ (index .RopeClimberCompetitions 0).YearOfBirth }})
+  </span>
+  <button class="hover:text-blue-600 cursor-pointer"onclick="history.back()" 
+            class="">
+        &larr; Zpět
+    </button>
+</div>
+<table class="w-full text-[10px] md:text-sm">
+  <thead class="border-b border-gray-300 bg-gray-200 text-gray-600 font-bold text-left">
+    <tr>
+      <th class="px-1 py-1">Datum</th>
+      <th class="px-1 py-1">Závod</th>
+      <th class="px-1 py-1">Oddíl</th>
+      <th class="px-1 py-1">Čas 1</th>
+      <th class="px-1 py-1">Čas 2</th>
+      <th class="px-1 py-1">Čas 3</th>
+      <th class="px-1 py-1">Čas 4</th>
+      <th class="px-1 py-1">Top</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ range .RopeClimberCompetitions }}
+    <tr class="border-b border-gray-300 even:bg-gray-200 text-gray-600">
+      <td class="px-1 py-1">{{ .FormattedDate }}</td>
+      <td class="px-1 py-1">{{ .CompetitionName }}</td>
+      <td class="px-1 py-1">{{ .Organization }}</td>
+      <td class="px-1 py-10">
+        {{ if .Time1 }}
+        {{ .Time1 }}
+        {{ else }}
+        -
+        {{ end }}
+      </td>
+      <td class="px-1 py-10">
+        {{ if .Time2 }}
+        {{ .Time2 }}
+        {{ else }}
+        -
+        {{ end }}
+      </td>
+      <td class="px-1 py-3">
+        {{ if .Time3 }}
+        {{ .Time3 }}
+        {{ else }}
+        -
+        {{ end }}
+      </td>
+      <td class="px-1 py-3">
+        {{ if .Time4 }}
+        {{ .Time4 }}
+        {{ else }}
+        -
+        {{ end }}
+      </td>
+      <td class="px-1 py-3">{{ .Top }}</td>
+    </tr>
+    {{ end }}
+  </tbody>
+
+</table>
+{{ end }}

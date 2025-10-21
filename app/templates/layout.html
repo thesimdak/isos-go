@@ -81,6 +81,9 @@
         {{ if eq .contentTemplate "contact.html" }}
         {{ template "contact.html" . }}
         {{ end }}
+        {{ if eq .contentTemplate "rope_climber_competitions.html" }}
+        {{ template "rope_climber_competitions.html" . }}
+        {{ end }}
     </main>
 
     <div id="spinner" class="spinner-wrapper">

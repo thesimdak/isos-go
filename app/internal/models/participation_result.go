@@ -6,6 +6,7 @@ import (
 )
 
 type ParticipationResult struct {
+	Id           int
 	Rank         int
 	Name         string
 	YearOfBirth  string
