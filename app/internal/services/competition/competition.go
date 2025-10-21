@@ -79,7 +79,7 @@ func (svc *CompetitionService) UploadResults(file multipart.File) {
 	categoryIV := svc.CategoryRepo.EnsureCategory(loaders.KatIV, "Senioři", 8.0)
 	categoryV := svc.CategoryRepo.EnsureCategory(loaders.KatV, "Ženy a dorostenky", 4.5)
 	categoryVI := svc.CategoryRepo.EnsureCategory(loaders.KatVI, "Žákyně", 4.5)
-
+	svc.ParticipationRepo.DeleteByCompetitionId(competition.ID)
 	svc.SaveResults(competition, categoryI, f)
 	svc.SaveResults(competition, categoryII, f)
 	svc.SaveResults(competition, categoryIII, f)
@@ -122,9 +122,7 @@ func (svc *CompetitionService) SaveResults(competition *models.Competition, cate
 			times = append(times, time4)
 		}
 		rc := svc.RopeClimberRepo.EnsureRopeClimber(ropeClimber)
-		svc.TimeRepo.DeleteByCompetitionIdAndCategoryIdAndRopeClimberId(competition.ID, category.ID, rc.ID)
 		p := &models.Participation{RopeClimber: rc, Organization: currentRow[4], TimeList: times, Category: category, Competition: competition}
-		svc.ParticipationRepo.DeleteByCompetitionIdAndCategoryIdAndRopeClimberId(p)
 		participation := svc.ParticipationRepo.InsertParticipation(p)
 		svc.TimeRepo.SaveTimes(participation.ID, times)
 		rowIndex++

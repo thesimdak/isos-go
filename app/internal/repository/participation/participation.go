@@ -16,6 +16,13 @@ func NewParticipationRepository(repo *repository.Repository) *ParticipationRepos
 }
 
 func (repo *ParticipationRepository) DeleteByCompetitionId(id int64) {
+	queryDeleteTimes := `DELETE FROM time WHERE time.participation_id in (SELECT id FROM participation WHERE competition_id = ?)`
+
+	repo.DB.Exec(
+		queryDeleteTimes,
+		id,
+	)
+
 	query := `DELETE FROM participation WHERE competition_id = ?`
 
 	repo.DB.Exec(
@@ -32,6 +39,16 @@ func (repo *ParticipationRepository) DeleteByCompetitionIdAndCategoryIdAndRopeCl
 		p.Competition.ID,
 		p.Category.ID,
 		p.RopeClimber.ID,
+	)
+}
+
+func (repo *ParticipationRepository) DeleteByCompetitionIdAndCategoryId(competitionId int64, categoryId int64) {
+	query := `DELETE FROM participation WHERE competition_id = ? and category_id = ?`
+
+	repo.DB.Exec(
+		query,
+		competitionId,
+		categoryId,
 	)
 }
 
