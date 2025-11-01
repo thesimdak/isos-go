@@ -142,6 +142,9 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 	})
 
 	router.GET("/results/:competitionId", func(c *gin.Context) {
+		c.Header("Cache-Control", "no-store, max-age=0, must-revalidate")
+		c.Header("Pragma", "no-cache") // For HTTP/1.0 backward compatibility
+		c.Header("Expires", "0")       // For proxies
 		competitionId := c.Param("competitionId")
 		categories := categoryRepo.GetCategoriesByCompetitionId(competitionId)
 		competition := competitionRepo.FindById(competitionId)
