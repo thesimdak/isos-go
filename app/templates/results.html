@@ -28,16 +28,7 @@
         $refs.hiddenInput.value = selectedID; 
         $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
         
-        // 🚀 NEW LOGIC START 🚀
-        (function() {
-          // 1. Get current URL query parameters
-          const url = new URL(window.location);
-          // 2. Set/Override the 'category' parameter
-          url.searchParams.set('category', selectedID);
-          // 3. Replace the URL state, preserving everything else
-          history.replaceState(null, '', url.search);
-        })();
-        // 🚀 NEW LOGIC END 🚀
+      
         "
         class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
         {{ .Label }}
@@ -46,7 +37,7 @@
     </div>
 
     <input type="hidden" id="category" name="category" x-ref="hiddenInput" hx-indicator="#spinner"
-      :hx-get="`/result-table/{{ .CompetitionID }}`" hx-trigger="change" hx-target="#result-list">
+      :hx-get="`/result-table/{{ .CompetitionID }}`" :hx-push-url="`/results/{{ .CompetitionID }}?category=${selectedID}`" hx-trigger="change" hx-target="#result-list">
   </div>
 </div>
 
