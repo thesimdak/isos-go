@@ -65,7 +65,18 @@ func (repo *RopeClimberRepository) FindRopeClimber(rc *models.RopeClimber) *mode
 }
 
 func (repo *RopeClimberRepository) FindRopeClimberCompetition(ropeclimberId string) []models.RopeClimberCompetition {
-	query := `SELECT rc.id, CONCAT(rc.last_name, ', ', rc.first_name) AS name, rc.year_of_birth, p.organization, c.name, c.date, FORMAT(t1.time, 2), FORMAT(t2.time, 2), FORMAT(t3.time, 2), FORMAT(t4.time, 2)FROM rope_climber rc JOIN participation p ON p.rope_climber_id = rc.id 
+	query := `SELECT rc.id, 
+					 CONCAT(rc.last_name, ', ', rc.first_name) AS name,
+					 rc.year_of_birth, 
+					 p.organization, 
+					 cat.label,
+					 c.name, 
+					 c.date, 
+					 FORMAT(t1.time, 2), 
+					 FORMAT(t2.time, 2), 
+					 FORMAT(t3.time, 2), 
+					 FORMAT(t4.time, 2) FROM rope_climber rc JOIN participation p ON p.rope_climber_id = rc.id 
+					 										JOIN category cat ON cat.id = p.category_id 	
 LEFT JOIN time t1 ON t1.participation_id = p.id AND t1.round = 1
     LEFT JOIN time t2 ON t2.participation_id = p.id AND t2.round = 2
     LEFT JOIN time t3 ON t3.participation_id = p.id AND t3.round = 3
@@ -90,6 +101,7 @@ JOIN competition c ON c.id = p.competition_id WHERE rc.id = ? ORDER BY c.date de
 			&result.Name,
 			&result.YearOfBirth,
 			&result.Organization,
+			&result.Category,
 			&result.CompetitionName,
 			&dateBytes,
 			&result.Time1,

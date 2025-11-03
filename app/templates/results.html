@@ -1,14 +1,6 @@
 {{ define "results.html" }}
-<div x-data="{ 
-  open: false, 
-  selectedLabel: '{{ if .CategoryLabel }}{{ .CategoryLabel }}{{ else }}{{ (index .Categories 0).Label }}{{ end }}',
-  selectedID: '{{ if .CategoryID }}{{ .CategoryID }}{{ else }}{{ (index .Categories 0).ID }}{{ end }}' 
-}" @htmx:load.window.once="() => {
-  if ('{{ .CategoryID }}' !== '') { 
-    selectedID = '{{ .CategoryID }}'; // Use provided CategoryID if available
-  }
-  $refs.hiddenInput.value = selectedID;
-  $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }))
+<div id="result" x-data="{ 
+  open: false
 }">
   {{ if ne .ResultView "true" }}
   <div class="text:xl md:text-2xl text-gray-600 border-b-1 border-gray-300 px-2 py-2">
@@ -18,29 +10,24 @@
   <div class="relative w-64">
     <button @click="open = !open"
       class="text:xl md:text-2xl text-gray-600 px-2 py-2 bg-white focus:outline-none cursor-pointer">
-      <span x-text="selectedLabel"></span> ▼
+      <span>{{ .CategoryLabel }}</span> ▼
     </button>
 
     <div x-show="open" @click.away="open = false"
       class="absolute w-full bg-white shadow-md mt-1 max-h-40 overflow-y-auto z-10">
+      {{ $compID := .CompetitionID }}
       {{ range .Categories }}
-      <div @click="selectedLabel = '{{ .Label }}'; selectedID = '{{ .ID }}'; open = false; 
-        $refs.hiddenInput.value = selectedID; 
-        $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-        
-      
-        "
+      <div @click="open = false;" hx-indicator="#spinner" hx-get="/results/{{ $compID }}?category={{ .ID }}"
+        hx-push-url="/results/{{ $compID }}?category={{ .ID }}" hx-trigger="click" hx-target="#result"
         class="px-4 py-2 text-lg text-gray-600 cursor-pointer hover:bg-gray-100 border-b border-gray-300 last:border-b-0">
         {{ .Label }}
       </div>
       {{ end }}
     </div>
 
-    <input type="hidden" id="category" name="category" x-ref="hiddenInput" hx-indicator="#spinner"
-      :hx-get="`/result-table/{{ .CompetitionID }}`" :hx-push-url="`/results/{{ .CompetitionID }}?category=${selectedID}`" hx-trigger="change" hx-target="#result-list">
+  </div>
+  <div id="result-list" hx-trigger="load" hx-get="/result-table/{{ .CompetitionID }}?category={{ .CategoryID }}">
   </div>
 </div>
 
-<div id="result-list">
-  </div>
 {{ end }}

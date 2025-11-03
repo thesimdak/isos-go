@@ -12,6 +12,7 @@ type RopeClimberCompetition struct {
 	YearOfBirth     *int16
 	Date            *time.Time
 	Organization    *string
+	Category        *string
 	CompetitionName *string
 	Time1           *string
 	Time2           *string

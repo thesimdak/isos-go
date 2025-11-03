@@ -154,6 +154,11 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 				break
 			}
 		}
+		if categoryId == "" {
+			categoryId = fmt.Sprint(categories[0].ID)
+			categoryLabel = categories[0].Label
+
+		}
 		renderPartial(c, "results.html", gin.H{
 			"CompetitionID": competitionId,
 			"CategoryID":    categoryId,
