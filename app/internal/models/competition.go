@@ -7,11 +7,11 @@ type Competition struct {
 	CompetitionName    string
 	Name               string
 	Date               time.Time
-	Place              string
-	Judge              string
-	SensorInstallation string
-	Starter            string
-	Type               string
+	Place              *string
+	Judge              *string
+	SensorInstallation *string
+	Starter            *string
+	Type               *string
 }
 
 func (c Competition) FormattedDate() string {

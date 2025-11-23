@@ -45,11 +45,17 @@ func LoadCompetition(f *excelize.File) *models.Competition {
 		}
 	}
 
-	competition.Place, _ = f.GetCellValue(InfoSheet, PlaceCell)
-	competition.Judge, _ = f.GetCellValue(InfoSheet, JudgeCell)
-	competition.SensorInstallation, _ = f.GetCellValue(InfoSheet, SensorInstallationCell)
-	competition.Starter, _ = f.GetCellValue(InfoSheet, StarterCell)
-	competition.Type, _ = f.GetCellValue(InfoSheet, TypeCell)
+	place, _ := f.GetCellValue(InfoSheet, PlaceCell)
+	judge, _ := f.GetCellValue(InfoSheet, JudgeCell)
+	sensorInstallation, _ := f.GetCellValue(InfoSheet, SensorInstallationCell)
+	starter, _ := f.GetCellValue(InfoSheet, StarterCell)
+	typeValue, _ := f.GetCellValue(InfoSheet, TypeCell)
+
+	competition.Place = &place
+	competition.Judge = &judge
+	competition.SensorInstallation = &sensorInstallation
+	competition.Starter = &starter
+	competition.Type = &typeValue
 
 	return competition
 }
