@@ -24,6 +24,8 @@ const (
 	KatIV                  = "KAT_IV"
 	KatV                   = "KAT_V"
 	KatVI                  = "KAT_VI"
+	KatVII                 = "KAT_VII"
+	KatVIII                = "KAT_VIII"
 )
 
 func LoadCompetition(f *excelize.File) *models.Competition {

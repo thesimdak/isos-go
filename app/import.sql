@@ -11,7 +11,9 @@ INSERT INTO `category` (`id`, `category_key`, `label`, `rope_length`) VALUES
 (3, 'KAT_III', 'Muži', 8),
 (4, 'KAT_IV', 'Masters', 8),
 (5, 'KAT_V', 'Ženy a dorostenky', 4.5),
-(6, 'KAT_VI', 'Žákyně', 4.5);
+(6, 'KAT_VI', 'Žákyně', 4.5),
+(7, 'KAT_VII', 'Žákyně', 4.5),
+(8, 'KAT_VII', 'Žákyně', 4.5);
 
 --
 -- Indexes for dumped tables

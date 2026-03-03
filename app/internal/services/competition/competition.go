@@ -79,6 +79,8 @@ func (svc *CompetitionService) UploadResults(file multipart.File) {
 	categoryIV := svc.CategoryRepo.EnsureCategory(loaders.KatIV, "Senioři", 8.0)
 	categoryV := svc.CategoryRepo.EnsureCategory(loaders.KatV, "Ženy a dorostenky", 4.5)
 	categoryVI := svc.CategoryRepo.EnsureCategory(loaders.KatVI, "Žákyně", 4.5)
+	categoryVII := svc.CategoryRepo.EnsureCategory(loaders.KatVI, "Mladší žáci", 4.5)
+	categoryVIII := svc.CategoryRepo.EnsureCategory(loaders.KatVI, "Mladší žákyně", 4.5)
 	svc.ParticipationRepo.DeleteByCompetitionId(competition.ID)
 	svc.SaveResults(competition, categoryI, f)
 	svc.SaveResults(competition, categoryII, f)
@@ -86,6 +88,8 @@ func (svc *CompetitionService) UploadResults(file multipart.File) {
 	svc.SaveResults(competition, categoryIV, f)
 	svc.SaveResults(competition, categoryV, f)
 	svc.SaveResults(competition, categoryVI, f)
+	svc.SaveResults(competition, categoryVII, f)
+	svc.SaveResults(competition, categoryVIII, f)
 }
 
 func (svc *CompetitionService) SaveResults(competition *models.Competition, category *models.Category, workbook *excelize.File) {
