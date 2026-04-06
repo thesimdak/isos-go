@@ -14,6 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/thesimdak/goisos/internal/handlers/upload"
+	"github.com/thesimdak/goisos/internal/models"
 	"github.com/thesimdak/goisos/internal/repository"
 	"github.com/thesimdak/goisos/internal/repository/category"
 	"github.com/thesimdak/goisos/internal/repository/competition"
@@ -99,11 +100,17 @@ func Initialize(db *sql.DB, staticFS embed.FS) {
 	})
 
 	router.GET("/nomination", func(c *gin.Context) {
+		categoryId := c.Query("category")
+		var category *models.Category
+		if categoryId != "" {
+			category = categoryRepo.FindCategoryById(categoryId)
+		}
 		categories := categoryRepo.GetAllCategories()
 		year := competitionService.GetSeasons()[0]
 		renderPartial(c, "nomination.html", gin.H{
 			"Categories": categories,
 			"Year":       year,
+			"Category":   category,
 		})
 	})
 

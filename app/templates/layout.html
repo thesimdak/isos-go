@@ -11,6 +11,33 @@
     <script src="/static/js/alpine.js" defer></script>
     <!-- <link href="/static/output.css" rel="stylesheet"> -->
     <script src="/static/js/htmx.js" defer></script>
+    {{ if eq .ResultView "true" }}
+
+    
+    <script>
+    function sendHeight() {
+        var height = document.documentElement.scrollHeight || document.body.scrollHeight;
+        window.parent.postMessage(
+            {
+                type: "setIframeHeight",
+                height: height
+            },
+            "*"
+            );
+        }
+        document.addEventListener('change', function(event) {
+            if (event.target.id === 'category') {
+                console.log("Kategorie změněna, brzy budeme měnit výšku...");
+                // Tady můžeš například zobrazit spinner nebo resetovat výšku
+                sendHeight(); 
+            }
+        });
+        window.addEventListener("load", sendHeight);
+        window.addEventListener("resize", sendHeight);
+
+        setTimeout(sendHeight, 1000);
+    </script>
+    {{ end }}
    <style>
     .spinner-wrapper {
         position: fixed;

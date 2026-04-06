@@ -1,7 +1,9 @@
 {{ define "nomination.html" }}
-<div x-data="{ open: false, 
-  selectedLabel: '{{ (index .Categories 0).Label }}',
-  selectedID: '{{ (index .Categories 0).ID }}'}"
+<div x-data="{ 
+    open: false, 
+    selectedLabel: '{{ if .Category }}{{ .Category.Label }}{{ else }}{{ (index .Categories 0).Label }}{{ end }}',
+    selectedID: '{{ if .Category }}{{ .Category.ID }}{{ else }}{{ (index .Categories 0).ID }}{{ end }}'
+  }"
 @htmx:load.window.once="() => {
   $refs.hiddenInput.value = selectedID;
   $refs.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
