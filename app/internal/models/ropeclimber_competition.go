@@ -29,21 +29,33 @@ func (r RopeClimberCompetition) GetTopTime() float64 {
 	times := make([]float64, 0, 4)
 
 	if r.Time1 != nil {
+		if *r.Time1 == "-" {
+			times = append(times, 999.00)
+		}
 		if time1, err := strconv.ParseFloat(*r.Time1, 64); err == nil {
 			times = append(times, time1)
 		}
 	}
 	if r.Time2 != nil {
+		if *r.Time2 == "-" {
+			times = append(times, 999.00)
+		}
 		if time2, err := strconv.ParseFloat(*r.Time2, 64); err == nil {
 			times = append(times, time2)
 		}
 	}
 	if r.Time3 != nil {
+		if *r.Time3 == "-" {
+			times = append(times, 999.00)
+		}
 		if time3, err := strconv.ParseFloat(*r.Time3, 64); err == nil {
 			times = append(times, time3)
 		}
 	}
 	if r.Time4 != nil {
+		if *r.Time4 == "-" {
+			times = append(times, 999.00)
+		}
 		if time4, err := strconv.ParseFloat(*r.Time4, 64); err == nil {
 			times = append(times, time4)
 		}

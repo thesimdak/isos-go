@@ -69,21 +69,33 @@ func (result ParticipationResult) GetTopTimes() []float64 {
 	times := make([]float64, 0, 4)
 
 	if result.Time1 != nil {
+		if *result.Time1 == "-" {
+			times = append(times, 999.00)
+		}
 		if time1, err := strconv.ParseFloat(*result.Time1, 64); err == nil {
 			times = append(times, time1)
 		}
 	}
 	if result.Time2 != nil {
+		if *result.Time2 == "-" {
+			times = append(times, 999.00)
+		}
 		if time2, err := strconv.ParseFloat(*result.Time2, 64); err == nil {
 			times = append(times, time2)
 		}
 	}
 	if result.Time3 != nil {
+		if *result.Time3 == "-" {
+			times = append(times, 999.00)
+		}
 		if time3, err := strconv.ParseFloat(*result.Time3, 64); err == nil {
 			times = append(times, time3)
 		}
 	}
 	if result.Time4 != nil {
+		if *result.Time4 == "-" {
+			times = append(times, 999.00)
+		}
 		if time4, err := strconv.ParseFloat(*result.Time4, 64); err == nil {
 			times = append(times, time4)
 		}
